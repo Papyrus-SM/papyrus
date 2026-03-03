@@ -14,7 +14,7 @@ O **Papyrus** permite que o usuário gerencie os temas que estão sendo estudado
 * **Framework/Biblioteca:** [Ex: React]
 * **Estilização:** [Ex: Tailwind CSS]
 
-### Backend (Se houver)
+### Backend
 * **Linguagem/Framework:** [Ex: PHP/Laravel]
 * **Banco de Dados:** [Ex: MySQL]
 
