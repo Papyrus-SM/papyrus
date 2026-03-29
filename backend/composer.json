@@ -1,0 +1,19 @@
+{
+    "name": "reis/backend",
+    "description": "API do projeto papyrus",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Reis\\Backend\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "João Reis",
+            "email": "j.victor.reis20044@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
