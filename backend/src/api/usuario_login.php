@@ -1,8 +1,8 @@
 <?php
 
+include_once(__DIR__ . '/../config/headers.php');
+include_once(__DIR__ . '/../config/input.php');
 include_once(__DIR__ . '/../config/conexao.php');
-
-header("Content-Type: application/json; charset=utf-8");
 
 session_start();
 
@@ -12,8 +12,10 @@ $retorno = [
     "data" => []
 ];
 
-$email = trim($_POST["email"] ?? "");
-$senha = trim($_POST["senha"] ?? "");
+$body = getBody();
+
+$email = trim($body["email"] ?? "");
+$senha = trim($body["senha"] ?? "");
 
 if (empty($email) || empty($senha)) {
     $retorno["status"] = "nok";
@@ -30,6 +32,8 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo json_encode($retorno);
     exit;
 }
+
+$conexao = getConexao();
 
 $stmt = $conexao->prepare("
     SELECT id, nome, email, senha_hash

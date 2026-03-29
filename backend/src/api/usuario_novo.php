@@ -1,8 +1,8 @@
 <?php
 
+include_once(__DIR__ . '/../config/headers.php');
+include_once(__DIR__ . '/../config/input.php');
 include_once(__DIR__ . '/../config/conexao.php');
-
-header("Content-Type: application/json; charset=utf-8");
 
 $retorno = [
     "status" => "",
@@ -10,11 +10,13 @@ $retorno = [
     "data" => []
 ];
 
-$nome = trim($_POST["nome"] ?? "");
-$email = trim($_POST["email"] ?? "");
-$senha = trim($_POST["senha"] ?? "");
-$data_nascimento = trim($_POST["data_nascimento"] ?? "");
-$genero = trim($_POST["genero"] ?? "");
+$body = getBody();
+
+$nome = trim($body["nome"] ?? "");
+$email = trim($body["email"] ?? "");
+$senha = trim($body["senha"] ?? "");
+$data_nascimento = trim($body["data_nascimento"] ?? "");
+$genero = trim($body["genero"] ?? "");
 
 if (
     empty($nome) ||
@@ -65,6 +67,8 @@ if (!in_array($genero, $generosPermitidos)) {
     echo json_encode($retorno);
     exit;
 }
+
+$conexao = getConexao();
 
 $stmt = $conexao->prepare("SELECT id FROM users WHERE email = :email LIMIT 1");
 $stmt->execute([

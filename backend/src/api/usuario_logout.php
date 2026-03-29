@@ -1,6 +1,7 @@
 <?php
 
-header("Content-Type: application/json; charset=utf-8");
+include_once(__DIR__ . '/../config/headers.php');
+include_once(__DIR__ . '/../config/input.php');
 
 session_start();
 
