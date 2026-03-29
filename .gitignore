@@ -1,0 +1,9 @@
+# IDEs e Editores
+.idea/
+.vscode/
+*.swp
+*.pstat
+
+# SO
+.DS_Store
+Thumbs.db
