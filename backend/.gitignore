@@ -1,0 +1,9 @@
+# Dependências do PHP
+vendor/
+
+# Configurações sensíveis
+.env
+src/config/conexao.php
+
+# Logs
+*.log

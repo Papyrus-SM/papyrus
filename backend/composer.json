@@ -1,19 +1,26 @@
 {
-    "name": "reis/backend",
-    "description": "API do projeto papyrus",
+    "name": "reis/papyrus-backend",
+    "description": "API do sistema de gerenciamento estudantil Papyrus",
     "type": "project",
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Reis\\Backend\\": "src/"
-        }
-    },
     "authors": [
         {
-            "name": "João Reis",
-            "email": "j.victor.reis20044@gmail.com"
+            "name": "João Victor dos Reis da Silva",
+            "role": "Developer"
         }
     ],
-    "minimum-stability": "stable",
-    "require": {}
+    "require": {
+        "php": ">=8.0",
+        "vlucas/phpdotenv": "^5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
 }
