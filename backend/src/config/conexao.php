@@ -3,7 +3,7 @@
 $servidor = "localhost";
 $banco = "papyrus";
 $usuario = "root";
-$senha = "";
+$senha = "240723";
 $charset = "utf8mb4";
 
 try {
