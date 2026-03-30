@@ -27,10 +27,14 @@ export default function LoginForm() {
             const data = await loginUser(formData)
 
             if (data.status === 'ok') {
+                localStorage.setItem('papyrus_user', JSON.stringify(data.data.usuario))
                 setFeedback({
                     type: 'success',
                     message: data.mensagem || 'Login realizado com sucesso.',
                 })
+                setTimeout(() => {
+                    window.location.href = '/dashboard'
+                }, 600)
 
                 // 🚀 FUTURO: redirecionar para dashboard
                 // window.location.href = '/dashboard'
@@ -41,7 +45,7 @@ export default function LoginForm() {
                 })
             }
 
-        } catch (err) {
+        } catch (error) {
             setFeedback({
                 type: 'error',
                 message: 'Erro ao conectar com o servidor.',
