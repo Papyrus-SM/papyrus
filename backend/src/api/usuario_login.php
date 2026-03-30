@@ -14,7 +14,7 @@ $retorno = [
 
 $body = getBody();
 
-$email = trim($body["email"] ?? "");
+$email = trim($body["email"] ?? ""); // testando o email
 $senha = trim($body["senha"] ?? "");
 
 if (empty($email) || empty($senha)) {
