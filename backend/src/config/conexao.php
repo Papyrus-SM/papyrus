@@ -2,18 +2,17 @@
 
 function getConexao(): PDO
 {
-    $servidor = "localhost";
+    $servidor = "127.0.0.1";
+    $porta = "3306";
     $banco = "papyrus";
     $usuario = "root";
-    $senha = "240723";
+    $senha = "Jv240723.";
     $charset = "utf8mb4";
 
     try {
-        $conexao = new PDO(
-            "mysql:host=$servidor;dbname=$banco;charset=$charset",
-            $usuario,
-            $senha
-        );
+        $dsn = "mysql:host=$servidor;port=$porta;dbname=$banco;charset=$charset";
+
+        $conexao = new PDO($dsn, $usuario, $senha);
 
         $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $conexao->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
@@ -24,7 +23,7 @@ function getConexao(): PDO
         header("Content-Type: application/json; charset=utf-8");
         echo json_encode([
             "status" => "nok",
-            "mensagem" => "Erro na conexão com o banco de dados.",
+            "mensagem" => $e->getMessage(),
             "data" => []
         ]);
         exit;
