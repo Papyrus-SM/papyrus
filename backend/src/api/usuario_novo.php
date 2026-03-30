@@ -13,6 +13,9 @@ $retorno = [
 $body = getBody();
 
 $nome = trim($body["nome"] ?? "");
+//trim é responsavel por "apagar" espaços antes e depois na string
+//exemplo: " joao ", trim retorna: "joao"
+
 $email = trim($body["email"] ?? "");
 $senha = trim($body["senha"] ?? "");
 $data_nascimento = trim($body["data_nascimento"] ?? "");
