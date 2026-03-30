@@ -1,16 +1,25 @@
 <?php
 
+//inclui o aquivo "autoload", que detecta automaticamente as bibliotecas instaladas
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+//localiza o arquivo .env na raiz do projeto backend,
+//createImmutable garante que uma vez carregadas, as variaveis presentes no .env não vão ser alteradas enquanto estão rodando
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
+// le as definições dentro do arquivo .env e carregam elas para o php
+$dotenv->load();
+
 function getConexao(): PDO
 {
-    $servidor = $_ENV['DB_HOST'];
-    $porta = $_ENV['DB_PORT'];
-    $banco = $_ENV['DB_NAME'];
-    $usuario = $_ENV['DB_USER'];
-    $senha = $_ENV['DB_PASS'];
-    $charset = $_ENV['DB_CHARSET'];
+    $servidor = $_ENV['DB_HOST'] ?? 'localhost';
+    $porta = $_ENV['DB_PORT'] ?? '3306';
+    $banco = $_ENV['DB_NAME'] ?? '';
+    $usuario = $_ENV['DB_USER'] ?? '';
+    $senha = $_ENV['DB_PASS'] ?? '';
+    $charset = $_ENV['DB_CHARSET'] ?? 'utf8mb4';
 
     try {
-        $dsn = "mysql:host=$servidor;port=$porta;dbname=$banco;charset=$charset";
+        $dsn = "mysql:host={$servidor};port={$porta};dbname={$banco};charset={$charset}";
 
         $conexao = new PDO($dsn, $usuario, $senha);
 
