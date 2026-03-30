@@ -6,7 +6,7 @@ function getConexao(): PDO
     $porta = "3306";
     $banco = "papyrus";
     $usuario = "root";
-    $senha = "@12My34SQL";
+    $senha = "Jv240723.";
     $charset = "utf8mb4";
 
     try {
