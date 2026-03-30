@@ -2,11 +2,11 @@
 
 function getConexao(): PDO
 {
-    $servidor = "127.0.0.1";
+    $servidor = "localhost:3306";
     $porta = "3306";
     $banco = "papyrus";
     $usuario = "root";
-    $senha = "Jv240723.";
+    $senha = "@12My34SQL";
     $charset = "utf8mb4";
 
     try {

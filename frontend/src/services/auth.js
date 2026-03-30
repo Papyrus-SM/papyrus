@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://papyrus.local/src/api'
+const API_BASE_URL = 'http://localhost/estudos/Papirus/papirusv1/papyrus/backend/src/api/'
 
 async function parseResponse(response) {
     const text = await response.text()
