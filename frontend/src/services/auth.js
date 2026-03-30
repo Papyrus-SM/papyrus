@@ -23,3 +23,34 @@ export async function registerUser(payload) {
 
     return await parseResponse(response)
 }
+
+export async function loginUser(payload) {
+    const response = await fetch(`${API_BASE_URL}/usuario_login.php`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(payload),
+    })
+
+    return await parseResponse(response)
+}
+
+export async function logoutUser() {
+    const response = await fetch(`${API_BASE_URL}/usuario_logout.php`, {
+        method: 'POST',
+        credentials: 'include',
+    })
+
+    return await parseResponse(response)
+}
+
+export async function validateSession() {
+    const response = await fetch(`${API_BASE_URL}/valida_sessao.php`, {
+        method: 'GET',
+        credentials: 'include',
+    })
+
+    return await parseResponse(response)
+}
