@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { logoutUser } from '@/services/auth'
-
+import ProfileMenu from '@/components/profile/ProfileMenu'
 const items = [
     { label: 'Dashboard', to: '/dashboard' },
     { label: 'Matérias', to: '#' },
@@ -10,16 +10,18 @@ const items = [
     { label: 'Métodos', to: '#' },
 ]
 
-export default function DashboardSidebar() {
+export default function DashboardSidebar({ user, setUser }) {
     const location = useLocation()
     const navigate = useNavigate()
     const [isLeaving, setIsLeaving] = useState(false)
 
-    async function handleLogout() {
+    async function handleLogout(skipRequest = false) {
         try {
             setIsLeaving(true)
 
-            await logoutUser()
+            if (!skipRequest) {
+                await logoutUser()
+            }
 
             localStorage.removeItem('papyrus_user')
             navigate('/')
@@ -74,9 +76,15 @@ export default function DashboardSidebar() {
                     </p>
                 </div>
 
+                <ProfileMenu
+                    user={user}
+                    setUser={setUser}
+                    onLogout={handleLogout}
+                />
+
                 <button
                     type="button"
-                    onClick={handleLogout}
+                    onClick={() => handleLogout(false)}
                     disabled={isLeaving}
                     className="w-full rounded-xl border border-[#D8D8CF] bg-transparent px-4 py-3 text-sm text-[#4E4E47] transition hover:border-[#1A1A1A] hover:bg-[#ECECE4] hover:text-[#1A1A1A] disabled:cursor-not-allowed disabled:opacity-70"
                 >

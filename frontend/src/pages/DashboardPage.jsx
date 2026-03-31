@@ -27,7 +27,7 @@ export default function DashboardPage() {
     return (
         <main className="min-h-screen bg-[#FAFAF7] text-[#1A1A1A]">
             <div className="flex">
-                <DashboardSidebar />
+                <DashboardSidebar user={user} setUser={setUser} />
 
                 <div className="min-h-screen flex-1">
                     <DashboardHeader />
