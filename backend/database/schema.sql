@@ -7,6 +7,8 @@ USE papyrus;
 -- ------------------------------------------------------------
 -- Tabela 1: users
 -- Armazena identidade e credenciais de acesso.
+-- NOTA: Esta mesma tabela atende ao CRUD de `Meu Perfil` recém adicionado,
+-- englobando nome, email, senha e outros dados visíveis.
 -- ------------------------------------------------------------
 CREATE TABLE users (
                        id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -61,4 +63,44 @@ CREATE TABLE horarios_aula (
                                FOREIGN KEY (assunto_id) REFERENCES assuntos(id) ON DELETE CASCADE
 );
 
-SELECT * FROM users;
+
+-- Eventos pontuais do usuário (provas, trabalhos, revisões, etc)
+
+CREATE TABLE eventos (
+                         id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                         user_id          INT UNSIGNED NOT NULL,
+                         assunto_id       INT UNSIGNED NULL,
+                         titulo           VARCHAR(150) NOT NULL,
+                         inicio           DATETIME NOT NULL,
+                         fim              DATETIME NULL,
+                         tipo             VARCHAR(50) NOT NULL,
+                         dia_inteiro      BOOLEAN DEFAULT FALSE,
+
+                         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                         FOREIGN KEY (assunto_id) REFERENCES assuntos(id) ON DELETE SET NULL
+);
+
+-- Lembretes associados ao usuário
+
+CREATE TABLE lembretes (
+                           id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                           user_id          INT UNSIGNED NOT NULL,
+                           titulo           VARCHAR(150) NOT NULL,
+                           data_hora        DATETIME NOT NULL,
+                           enviado          BOOLEAN DEFAULT FALSE,
+                           marcado_concluido BOOLEAN DEFAULT FALSE,
+
+                           FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Cronogramas de estudo criados pelo usuário
+
+CREATE TABLE cronogramas (
+                             id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                             user_id          INT UNSIGNED NOT NULL,
+                             titulo           VARCHAR(150) NOT NULL,
+                             data_inicio      DATE NOT NULL,
+                             data_fim         DATE NULL,
+
+                             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
