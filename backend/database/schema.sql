@@ -43,8 +43,9 @@ CREATE TABLE assuntos (
                           id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                           user_id          INT UNSIGNED NOT NULL,
                           nome             VARCHAR(100) NOT NULL,
-                          color_hex        CHAR(7) NOT NULL DEFAULT '#6366f1',
+                          color_hex        CHAR(7) NOT NULL DEFAULT '#f8ff97ff',
                           horas_semanais   TINYINT UNSIGNED DEFAULT 0,
+                          numero_assuntos INT UNSIGNED NOT NULL,
 
                           FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -103,8 +104,8 @@ CREATE TABLE lembretes (
 --                             data_inicio      DATE NOT NULL,
 --                             data_fim         DATE NULL,
 
-                             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
+--                             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+--);
 
 -- ------------------------------------------------------------
 -- Tabela: materias
@@ -113,14 +114,20 @@ CREATE TABLE lembretes (
 CREATE TABLE materias (
                           id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                           user_id          INT UNSIGNED NOT NULL,
+                          assunto_id       INT UNSIGNED NOT NULL,
+                          numero_assuntos INT UNSIGNED NOT NULL,
                           nome             VARCHAR(100) NOT NULL,
-
-                          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                          descricao        TEXT NULL,
+                          color_hex        CHAR(7) NOT NULL DEFAULT '#f8ff97ff',
+                          FOREIGN KEY (numero_assuntos) REFERENCES assuntos(numero_assuntos) ON DELETE CASCADE,
+                          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                          FOREIGN KEY (assunto_id) REFERENCES assuntos(id) ON DELETE CASCADE
 );
 
 -- ------------------------------------------------------------
 -- Relação de muitas tarefas para uma matéria (1:N). 
 -- Tarefas exclusivas de CADA matéria.
+-- Lembrando: Essa tabela será usada para o CRUD de tarefas EXCLUSIVA de cada matéria e não aparecerá na tela de outras tarefas [Gabriel]
 -- ------------------------------------------------------------
 CREATE TABLE tarefas (
                          id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -140,9 +147,10 @@ CREATE TABLE stick_notes (
                              id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                              user_id          INT UNSIGNED NOT NULL,
                              texto            TEXT NOT NULL,
-                             cor              VARCHAR(20) DEFAULT '#ffff88',
+                             cor              VARCHAR(20) DEFAULT '#ffff88', -- A ideia é que a cor será definida pelo usuário
                              pos_x            INT DEFAULT 0,
                              pos_y            INT DEFAULT 0,
 
                              FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
