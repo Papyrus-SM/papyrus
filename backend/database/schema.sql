@@ -37,6 +37,7 @@ CREATE TABLE perfil_onboarding (
 -- ------------------------------------------------------------
 -- Tabela 3: assuntos
 -- Cada assunto pertence a um usuário.
+-- Pessoal, é importante alinhar como isso funcionará na prática, porque o banco de dados não faz essa criação de forma automática, no banco de dados, não definimos uma "relação" para enviar um valor numérico para criar tabelas/linhas (msm com php puro, n consegui achar nada da forma como foi explicada na reunião), quem fará essa lógica de criar n matérias pelos n assuntos diferentes vai ser o back msm (PHP / API), deu bom de criar as tabelas que serão usadas até segunda [Gabriel]
 -- ------------------------------------------------------------
 CREATE TABLE assuntos (
                           id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -93,14 +94,55 @@ CREATE TABLE lembretes (
                            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Cronogramas de estudo criados pelo usuário
+-- Cronogramas de estudo criados pelo usuário (revisar para retirar no momento, não iremos entregar o cronograma mensal na primeira sprint [Gabriel])
 
-CREATE TABLE cronogramas (
+--CREATE TABLE cronogramas (
+--                             id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+--                             user_id          INT UNSIGNED NOT NULL,
+--                             titulo           VARCHAR(150) NOT NULL,
+--                             data_inicio      DATE NOT NULL,
+--                             data_fim         DATE NULL,
+
+                             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- ------------------------------------------------------------
+-- Tabela: materias
+-- Baseada nos 'assuntos' configurados, cada matéria pertence a um usuário.
+-- ------------------------------------------------------------
+CREATE TABLE materias (
+                          id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                          user_id          INT UNSIGNED NOT NULL,
+                          nome             VARCHAR(100) NOT NULL,
+
+                          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- ------------------------------------------------------------
+-- Relação de muitas tarefas para uma matéria (1:N). 
+-- Tarefas exclusivas de CADA matéria.
+-- ------------------------------------------------------------
+CREATE TABLE tarefas (
+                         id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                         materia_id       INT UNSIGNED NOT NULL,
+                         titulo           VARCHAR(150) NOT NULL,
+                         descricao        TEXT NULL,
+                         concluida        BOOLEAN DEFAULT FALSE,
+                         data_criacao     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+                         FOREIGN KEY (materia_id) REFERENCES materias(id) ON DELETE CASCADE
+);
+
+-- ------------------------------------------------------------
+-- Para a funcionalidade do usuário colocar "post-its" na tela.
+-- ------------------------------------------------------------
+CREATE TABLE stick_notes (
                              id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                              user_id          INT UNSIGNED NOT NULL,
-                             titulo           VARCHAR(150) NOT NULL,
-                             data_inicio      DATE NOT NULL,
-                             data_fim         DATE NULL,
+                             texto            TEXT NOT NULL,
+                             cor              VARCHAR(20) DEFAULT '#ffff88',
+                             pos_x            INT DEFAULT 0,
+                             pos_y            INT DEFAULT 0,
 
                              FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
