@@ -1,7 +1,7 @@
 <?php
 
-include_once(__DIR__ . '/../config/input.php');
-include_once(__DIR__ . '/../config/headers.php');
+include_once(__DIR__ . '/../../config/input.php');
+include_once(__DIR__ . '/../../config/headers.php');
 
 session_start();
 

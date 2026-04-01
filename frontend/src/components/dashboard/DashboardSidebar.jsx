@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { logoutUser } from '@/services/auth'
+import { logoutUser } from '@/services/api/api_usuario.js'
 import ProfileMenu from '@/components/profile/ProfileMenu'
 const items = [
     { label: 'Dashboard', to: '/dashboard' },

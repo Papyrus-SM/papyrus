@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { loginUser } from '@/services/auth'
+import { loginUser } from '@/services/api/api_usuario.js'
 
 export default function LoginForm() {
     const [formData, setFormData] = useState({
@@ -36,8 +36,6 @@ export default function LoginForm() {
                     window.location.href = '/dashboard'
                 }, 600)
 
-                // 🚀 FUTURO: redirecionar para dashboard
-                // window.location.href = '/dashboard'
             } else {
                 setFeedback({
                     type: 'error',

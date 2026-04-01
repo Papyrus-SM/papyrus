@@ -12,7 +12,7 @@ async function parseResponse(response) {
 }
 
 export async function registerUser(payload) {
-    const response = await fetch(`${API_BASE_URL}/usuario_novo.php`, {
+    const response = await fetch(`${API_BASE_URL}/usuario/usuario_novo.php`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export async function registerUser(payload) {
 }
 
 export async function loginUser(payload) {
-    const response = await fetch(`${API_BASE_URL}/usuario_login.php`, {
+    const response = await fetch(`${API_BASE_URL}/usuario/usuario_login.php`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ export async function loginUser(payload) {
 }
 
 export async function logoutUser() {
-    const response = await fetch(`${API_BASE_URL}/usuario_logout.php`, {
+    const response = await fetch(`${API_BASE_URL}/usuario/usuario_logout.php`, {
         method: 'POST',
         credentials: 'include',
     })
@@ -47,7 +47,7 @@ export async function logoutUser() {
 }
 
 export async function validateSession() {
-    const response = await fetch(`${API_BASE_URL}/valida_sessao.php`, {
+    const response = await fetch(`${API_BASE_URL}/usuario/valida_sessao.php`, {
         method: 'GET',
         credentials: 'include',
     })
@@ -56,7 +56,7 @@ export async function validateSession() {
 }
 
 export async function editUser(payload) {
-    const response = await fetch(`${API_BASE_URL}/usuario_editar.php`, {
+    const response = await fetch(`${API_BASE_URL}/usuario/usuario_editar.php`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ export async function editUser(payload) {
 }
 
 export async function deleteUser() {
-    const response = await fetch(`${API_BASE_URL}/usuario_excluir.php`, {
+    const response = await fetch(`${API_BASE_URL}/usuario/usuario_excluir.php`, {
         method: 'POST',
         credentials: 'include',
     })

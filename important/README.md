@@ -53,7 +53,7 @@ A organização do repositório reflete a separação entre o cliente e o servid
     ├── src/                  # Componentes e lógica do React
     │   ├── components/       # Componentes visuais isolados (UI, Auth, Dashboard)
     │   ├── pages/            # Telas completas da aplicação
-    │   ├── services/         # Arquivos de comunicação com a API (ex: auth.js)
+    │   ├── services/         # Arquivos de comunicação com a API (ex: api_usuario.js)
     │   └── main.jsx          # Ponto de entrada do React
     ├── .env.example          # Template de variáveis de ambiente do frontend
     ├── package.json          # Dependências do Node.js

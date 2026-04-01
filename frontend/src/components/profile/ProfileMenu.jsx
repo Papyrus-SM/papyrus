@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { deleteUser, editUser } from '@/services/auth'
+import { deleteUser, editUser } from '@/services/api/api_usuario.js'
 import ProfileTrigger from '@/components/profile/ProfileTrigger'
 import ProfileModal from '@/components/profile/ProfileModal'
 import ProfileFieldCard from '@/components/profile/ProfileFieldCard'
