@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { registerUser } from '@/services/api/api_usuario.js'
+import FormFeedback from './FormFeedback'
 
 const initialForm = {
     nome: '',
@@ -10,13 +11,29 @@ const initialForm = {
 }
 
 export default function RegisterForm() {
+    /*
+        Estado principal do formulário de cadastro.
+        Armazena os dados preenchidos pelo usuário.
+    */
     const [formData, setFormData] = useState(initialForm)
+
+    /*
+        Estado de carregamento durante o envio do cadastro.
+    */
     const [loading, setLoading] = useState(false)
+
+    /*
+        Estado de feedback visual.
+        Exibe mensagens de sucesso ou erro.
+    */
     const [feedback, setFeedback] = useState({
         type: '',
         message: '',
     })
 
+    /*
+        Atualiza o estado do formulário conforme o usuário digita ou seleciona um valor.
+    */
     function handleChange(event) {
         const { name, value } = event.target
         setFormData((prev) => ({
@@ -25,6 +42,10 @@ export default function RegisterForm() {
         }))
     }
 
+    /*
+        Envia os dados para a API de cadastro.
+        Em caso de sucesso, limpa os campos e exibe feedback.
+    */
     async function handleSubmit(event) {
         event.preventDefault()
         setLoading(true)
@@ -57,7 +78,15 @@ export default function RegisterForm() {
     }
 
     return (
+        /*
+            Card visual do formulário de cadastro.
+            Reúne a apresentação e os campos de criação de conta.
+        */
         <div className="w-full max-w-md rounded-2xl border border-[#E8E8DF] bg-white/70 p-8 shadow-sm backdrop-blur-sm">
+            {/*
+                Bloco introdutório do formulário.
+                Apresenta a proposta da ação de criar conta no Papyrus.
+            */}
             <div className="mb-8">
                 <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.14em] text-[#8A8A80]">
                     Criar conta
@@ -73,6 +102,9 @@ export default function RegisterForm() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
+                {/*
+                    Campo de nome completo do usuário.
+                */}
                 <div>
                     <label
                         htmlFor="nome"
@@ -92,6 +124,9 @@ export default function RegisterForm() {
                     />
                 </div>
 
+                {/*
+                    Campo de e-mail do usuário.
+                */}
                 <div>
                     <label
                         htmlFor="email"
@@ -111,6 +146,10 @@ export default function RegisterForm() {
                     />
                 </div>
 
+                {/*
+                    Campo de senha.
+                    O placeholder informa a regra mínima já aplicada no backend.
+                */}
                 <div>
                     <label
                         htmlFor="senha"
@@ -130,6 +169,9 @@ export default function RegisterForm() {
                     />
                 </div>
 
+                {/*
+                    Campo de data de nascimento.
+                */}
                 <div>
                     <label
                         htmlFor="data_nascimento"
@@ -148,6 +190,10 @@ export default function RegisterForm() {
                     />
                 </div>
 
+                {/*
+                    Campo de gênero.
+                    Usa select porque o backend trabalha com um conjunto fechado de opções.
+                */}
                 <div>
                     <label
                         htmlFor="genero"
@@ -170,18 +216,14 @@ export default function RegisterForm() {
                     </select>
                 </div>
 
-                {feedback.message && (
-                    <div
-                        className={`rounded-xl border px-4 py-3 text-sm ${
-                            feedback.type === 'success'
-                                ? 'border-[#D6E7D4] bg-[#F4FAF2] text-[#355B35]'
-                                : 'border-[#E7D4D4] bg-[#FBF3F3] text-[#7A2E2E]'
-                        }`}
-                    >
-                        {feedback.message}
-                    </div>
-                )}
+                <FormFeedback
+                    type={feedback.type}
+                    message={feedback.message}
+                />
 
+                {/*
+                    Botão principal de envio do cadastro.
+                */}
                 <button
                     type="submit"
                     disabled={loading}
@@ -190,6 +232,9 @@ export default function RegisterForm() {
                     {loading ? 'Criando conta...' : 'Criar conta'}
                 </button>
 
+                {/*
+                    Ação secundária para ir à tela de login.
+                */}
                 <a
                     href="/login"
                     className="block w-full rounded-xl border border-[#CBCBC2] bg-transparent px-8 py-3.5 text-center text-[15px] font-normal tracking-[0.01em] text-[#1A1A1A] transition duration-200 hover:-translate-y-[1px] hover:border-[#1A1A1A] hover:bg-[#F0F0E8]"
