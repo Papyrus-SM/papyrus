@@ -86,15 +86,16 @@ CREATE TABLE tarefas (
 -- Tabela 6: stick_notes
 -- Post-its/anotações rápidas do usuário no dashboard.
 -- ------------------------------------------------------------
-CREATE TABLE stick_notes (
-                             id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                             user_id          INT UNSIGNED NOT NULL,
-                             texto            TEXT NOT NULL,
-                             cor              VARCHAR(20) DEFAULT '#ffff88',
-                             pos_x            INT DEFAULT 0,
-                             pos_y            INT DEFAULT 0,
+CREATE TABLE sticky_notes (
+                              id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                              user_id          INT UNSIGNED NOT NULL,
+                              titulo			      TEXT,
+                              texto            TEXT NOT NULL,
+                              cor              VARCHAR(20) DEFAULT '#ffff88', -- A ideia é que a cor será definida pelo usuário
+                              pos_x            INT DEFAULT 0,
+                              pos_y            INT DEFAULT 0,
 
-                             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                              FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- ------------------------------------------------------------
