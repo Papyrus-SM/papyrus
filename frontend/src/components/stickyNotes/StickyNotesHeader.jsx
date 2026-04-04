@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import FormStickyNote from "./FormStickyNote" // buscar o form
+import FormStickyNote from "./FormStickyNote"
 
 export default function StickyNotesHeader() {
     const [openModal, setOpenModal] = useState(false);
