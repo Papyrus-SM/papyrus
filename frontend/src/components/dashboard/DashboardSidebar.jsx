@@ -10,6 +10,7 @@ import ProfileMenu from '@/components/profile/ProfileMenu'
 const items = [
     { label: 'Dashboard', to: '/dashboard', disabled: false },
     { label: 'Matérias', to: '/materias', disabled: false },
+    { label: 'Post-its', to: '/sticky-notes', disabled: false },
     { label: 'Tarefas', to: null, disabled: true },
     { label: 'Calendário', to: null, disabled: true },
     { label: 'Métodos', to: null, disabled: true },
