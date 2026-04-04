@@ -3,6 +3,8 @@ import LandingPage from '@/pages/LandingPage'
 import RegisterPage from '@/pages/RegisterPage'
 import LoginPage from '@/pages/LoginPage'
 import DashboardPage from '@/pages/DashboardPage'
+import MateriasPage from "@/pages/MateriasPage.jsx";
+import MateriaDetalhePage from "@/pages/MateriaDetalhePage.jsx";
 
 export default function App() {
     return (
@@ -11,6 +13,8 @@ export default function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/materias" element={<MateriasPage />} />
+            <Route path="/materias/:materiaId" element={<MateriaDetalhePage />} />
         </Routes>
     )
 }
