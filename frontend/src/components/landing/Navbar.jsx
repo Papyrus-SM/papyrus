@@ -1,4 +1,7 @@
-const navItems = ['Métodos de estudo', 'Organização', 'Calendários', 'Metas']
+const navItems = [
+    { label: 'Métodos de estudo', id: 'metodos-de-estudo' },
+    { label: 'Organização', id: 'organizacao' },
+]
 
 export default function Navbar({ onNavigate }) {
     return (
@@ -11,11 +14,11 @@ export default function Navbar({ onNavigate }) {
                 <div className="hidden items-center gap-9 md:flex">
                     {navItems.map((item) => (
                         <button
-                            key={item}
-                            onClick={onNavigate}
-                            className="text-sm font-normal text-[#5A5A5A] transition-colors duration-200 hover:text-[#1A1A1A]"
+                            key={item.label}
+                            onClick={() => onNavigate(item.id)}
+                            className="cursor-pointer text-sm font-normal text-[#5A5A5A] transition-colors duration-200 hover:text-[#1A1A1A]"
                         >
-                            {item}
+                            {item.label}
                         </button>
                     ))}
                 </div>
