@@ -5,7 +5,7 @@ export default function HeroActions() {
         <div className="flex min-w-70 flex-col gap-3">
             <div data-animate className="animate-on-scroll">
                 <p className="mb-4 text-[13px] font-normal text-[#8A8A80]">
-                    Comece agora — é gratuito
+                    Comece agora! É gratuito
                 </p>
 
                 <Link
