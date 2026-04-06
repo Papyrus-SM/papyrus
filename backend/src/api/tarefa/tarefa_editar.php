@@ -1,21 +1,17 @@
 <?php
 
-// Inicia a sessão para identificar o usuário autenticado.
 session_start();
 
-// Carrega configurações da API e acesso ao banco.
 include_once(__DIR__ . '/../../config/headers.php');
 include_once(__DIR__ . '/../../config/input.php');
 include_once(__DIR__ . '/../../config/conexao.php');
 
-// Estrutura padrão de resposta da API.
 $retorno = [
     "status" => "",
     "mensagem" => "",
     "data" => []
 ];
 
-// Este endpoint só pode ser usado por um usuário logado.
 if (!isset($_SESSION["usuario"])) {
     $retorno["status"] = "nok";
     $retorno["mensagem"] = "Usuário não autenticado.";
@@ -23,13 +19,16 @@ if (!isset($_SESSION["usuario"])) {
     exit;
 }
 
-// Lê o corpo da requisição.
 $body = getBody();
 
-// Coleta o ID da tarefa a ser editada
 $tarefa_id = (int)($body["tarefa_id"] ?? 0);
+$titulo = trim($body["titulo"] ?? "");
+$descricao = $body["descricao"] ?? null;
+$dificuldade = trim($body["dificuldade"] ?? "");
+$data_entrega = $body["data_entrega"] ?? null;
+$concluida = isset($body["concluida"]) ? (bool)$body["concluida"] : false;
+$materia_id = (int)($body["materia_id"] ?? 0);
 
-// Validação do ID da tarefa
 if ($tarefa_id <= 0) {
     $retorno["status"] = "nok";
     $retorno["mensagem"] = "ID da tarefa inválido.";
@@ -37,42 +36,35 @@ if ($tarefa_id <= 0) {
     exit;
 }
 
-// Coleta as novas informações da tarefa
-$titulo = trim($body["titulo"] ?? "");
-$descricao = $body["descricao"] ?? null;
-$dificuldade = trim($body["dificuldade"] ?? "");
-$data_entrega = $body["data_entrega"] ?? null;
-$concluida = isset($body["concluida"]) ? (bool)$body["concluida"] : false;
-$materia = trim($body["materia"] ?? "");
-
-// Validação básica: pelo menos um campo deve ser preenchido
-if (empty($titulo) && empty($dificuldade) && empty($materia) && $descricao === null && $data_entrega === null && !$concluida) {
+if (empty($titulo) || empty($dificuldade) || $materia_id <= 0) {
     $retorno["status"] = "nok";
-    $retorno["mensagem"] = "Nenhum campo para atualizar.";
+    $retorno["mensagem"] = "Matéria, título e dificuldade são obrigatórios.";
     echo json_encode($retorno);
     exit;
 }
 
-// Regra: título é obrigatório (se enviado)
-if (!empty($titulo) && strlen($titulo) < 3) {
+if (strlen($titulo) < 3) {
     $retorno["status"] = "nok";
     $retorno["mensagem"] = "O título deve ter pelo menos 3 caracteres.";
     echo json_encode($retorno);
     exit;
 }
 
-// Regra: dificuldade é obrigatória (se enviada)
-if (!empty($dificuldade)) {
-    $dificuldadePermitida = ["facil", "medio", "dificil"];
-    if (!in_array($dificuldade, $dificuldadePermitida)) {
-        $retorno["status"] = "nok";
-        $retorno["mensagem"] = "Dificuldade inválida.";
-        echo json_encode($retorno);
-        exit;
+$dificuldadePermitida = ["facil", "medio", "dificil"];
+if (!in_array($dificuldade, $dificuldadePermitida, true)) {
+    $retorno["status"] = "nok";
+    $retorno["mensagem"] = "Dificuldade inválida.";
+    echo json_encode($retorno);
+    exit;
+}
+
+if ($descricao !== null) {
+    $descricao = trim($descricao);
+    if ($descricao === '') {
+        $descricao = null;
     }
 }
 
-// Validação da data de entrega (se for preenchida)
 if ($data_entrega !== null && $data_entrega !== "") {
     $data = DateTime::createFromFormat('Y-m-d', $data_entrega);
     if (!$data || $data->format('Y-m-d') !== $data_entrega) {
@@ -81,18 +73,16 @@ if ($data_entrega !== null && $data_entrega !== "") {
         echo json_encode($retorno);
         exit;
     }
-    $data_entrega = $data->format('Y-m-d');
+    $data_entrega = $data->format('Y-m-d 00:00:00');
+} else {
+    $data_entrega = null;
 }
 
-// Abre conexão com o banco.
 $conexao = getConexao();
+$user_id = $_SESSION["usuario"]["id"] ?? 0;
 
-// Guarda o ID do usuário
-$user_id = $_SESSION["usuario"] ["id"] ?? 0;
-
-// Verifica se a tarefa existe E pertence ao usuário
 $stmt = $conexao->prepare("
-    SELECT t.id, t.materia_id 
+    SELECT t.id
     FROM tarefas t
     INNER JOIN materias m ON t.materia_id = m.id
     WHERE t.id = :tarefa_id AND m.user_id = :user_id
@@ -113,53 +103,50 @@ if (!$tarefaExistente) {
     exit;
 }
 
-// Se a matéria foi alterada, valida
-$materia_id = $tarefaExistente["materia_id"];
+$stmtMateria = $conexao->prepare("
+    SELECT id
+    FROM materias
+    WHERE id = :materia_id AND user_id = :user_id
+    LIMIT 1
+");
 
-if (!empty($materia)) {
-    $stmtMateria = $conexao->prepare("SELECT id FROM materias WHERE nome = :materia AND user_id = :user_id LIMIT 1");
-    $stmtMateria->execute([
-        ":materia" => $materia,
-        ":user_id" => $user_id
-    ]);
+$stmtMateria->execute([
+    ":materia_id" => $materia_id,
+    ":user_id" => $user_id
+]);
 
-    $materiaValida = $stmtMateria->fetch();
-    if (!$materiaValida) {
-        $retorno["status"] = "nok";
-        $retorno["mensagem"] = "Matéria inválida ou não pertence a você.";
-        echo json_encode($retorno);
-        exit;
-    }
+$materiaValida = $stmtMateria->fetch();
 
-    $materia_id = $materiaValida["id"];
+if (!$materiaValida) {
+    $retorno["status"] = "nok";
+    $retorno["mensagem"] = "Matéria inválida ou não pertence a você.";
+    echo json_encode($retorno);
+    exit;
 }
 
-// Verifica duplicidade de título (se foi alterado)
-if (!empty($titulo)) {
-    $stmtVerifica = $conexao->prepare("
-        SELECT id FROM tarefas 
-        WHERE titulo = :titulo AND materia_id = :materia_id AND id != :tarefa_id
-        LIMIT 1
-    ");
+$stmtVerifica = $conexao->prepare("
+    SELECT id
+    FROM tarefas
+    WHERE titulo = :titulo AND materia_id = :materia_id AND id != :tarefa_id
+    LIMIT 1
+");
 
-    $stmtVerifica->execute([
-        ":titulo" => $titulo,
-        ":materia_id" => $materia_id,
-        ":tarefa_id" => $tarefa_id
-    ]);
+$stmtVerifica->execute([
+    ":titulo" => $titulo,
+    ":materia_id" => $materia_id,
+    ":tarefa_id" => $tarefa_id
+]);
 
-    if ($stmtVerifica->fetch()) {
-        $retorno["status"] = "nok";
-        $retorno["mensagem"] = "Já existe outra tarefa com esse título para essa matéria.";
-        echo json_encode($retorno);
-        exit;
-    }
+if ($stmtVerifica->fetch()) {
+    $retorno["status"] = "nok";
+    $retorno["mensagem"] = "Já existe outra tarefa com esse título para essa matéria.";
+    echo json_encode($retorno);
+    exit;
 }
 
-// Prepara o UPDATE
-$stmt = $conexao->prepare("
+$stmtUpdate = $conexao->prepare("
     UPDATE tarefas
-    SET 
+    SET
         titulo = :titulo,
         descricao = :descricao,
         dificuldade = :dificuldade,
@@ -170,8 +157,7 @@ $stmt = $conexao->prepare("
     LIMIT 1
 ");
 
-// Executa o UPDATE
-$executou = $stmt->execute([
+$executou = $stmtUpdate->execute([
     ":tarefa_id" => $tarefa_id,
     ":titulo" => $titulo,
     ":descricao" => $descricao,
@@ -181,14 +167,12 @@ $executou = $stmt->execute([
     ":materia_id" => $materia_id,
 ]);
 
-// Se houve atualização real no banco, informa sucesso.
-if ($executou && $stmt->rowCount() > 0) {
+if ($executou) {
     $retorno["status"] = "ok";
     $retorno["mensagem"] = "Tarefa atualizada com sucesso.";
 } else {
     $retorno["status"] = "nok";
-    $retorno["mensagem"] = "Nenhuma alteração foi realizada.";
+    $retorno["mensagem"] = "Falha ao atualizar a tarefa.";
 }
 
-// Retorna resposta em JSON.
 echo json_encode($retorno);

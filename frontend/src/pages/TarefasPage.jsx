@@ -34,7 +34,7 @@ export default function TarefasPage() {
     }
 
     const bootstrapSession = useCallback(async () => {
-        try {git 
+        try {
             setLoadingPage(true)
             const storedUser = localStorage.getItem('papyrus_user')
             if (storedUser) {

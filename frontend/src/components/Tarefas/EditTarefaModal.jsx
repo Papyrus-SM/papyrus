@@ -5,7 +5,7 @@ const initialForm = {
     descricao: '',
     dificuldade: 'facil',
     data_entrega: '',
-    materia: '',
+    materia_id: '',
     concluida: false,
 }
 
@@ -29,7 +29,7 @@ export default function EditTarefaModal({ isOpen, tarefa, onClose, onSubmit, loa
             descricao: tarefa.descricao || '',
             dificuldade: tarefa.dificuldade || 'facil',
             data_entrega: tarefa.data_entrega || '',
-            materia: tarefa.materia?.nome || '',
+            materia_id: tarefa.materia?.id || '',
             concluida: tarefa.concluida || false,
         })
 
@@ -71,7 +71,7 @@ export default function EditTarefaModal({ isOpen, tarefa, onClose, onSubmit, loa
             descricao: formData.descricao.trim() || null,
             dificuldade: formData.dificuldade,
             data_entrega: formData.data_entrega || null,
-            materia: formData.materia,
+            materia_id: Number(formData.materia_id),
             concluida: formData.concluida,
         }
 
@@ -80,7 +80,7 @@ export default function EditTarefaModal({ isOpen, tarefa, onClose, onSubmit, loa
             return
         }
 
-        if (!payload.materia) {
+        if (!payload.materia_id) {
             setError('Selecione uma matéria.')
             return
         }
@@ -131,15 +131,15 @@ export default function EditTarefaModal({ isOpen, tarefa, onClose, onSubmit, loa
                         <label htmlFor="edit_materia_select" className="mb-2 block text-sm font-medium text-[#3F3F39]">Matéria</label>
                         <select
                             id="edit_materia_select"
-                            name="materia"
-                            value={formData.materia}
+                            name="materia_id"
+                            value={formData.materia_id}
                             onChange={handleChange}
                             className="w-full rounded-xl border border-[#D9D9D0] bg-[#FAFAF7] px-4 py-3 text-sm text-[#1A1A1A] outline-none transition focus:border-[#1A1A1A]"
                             required
                         >
                             <option value="">Selecione uma matéria</option>
                             {materias.map((m) => (
-                                <option key={m.id} value={m.nome}>{m.nome}</option>
+                                <option key={m.id} value={m.id}>{m.nome}</option>
                             ))}
                         </select>
                     </div>

@@ -1,21 +1,17 @@
 <?php
 
-// Inicia a sessão para identificar o usuário autenticado.
 session_start();
 
-// Carrega configurações da API e acesso ao banco.
 include_once(__DIR__ . '/../../config/headers.php');
 include_once(__DIR__ . '/../../config/input.php');
 include_once(__DIR__ . '/../../config/conexao.php');
 
-// Estrutura padrão de resposta da API.
 $retorno = [
     "status" => "",
     "mensagem" => "",
     "data" => []
 ];
 
-// Este endpoint só pode ser usado por um usuário logado.
 if (!isset($_SESSION["usuario"])) {
     $retorno["status"] = "nok";
     $retorno["mensagem"] = "Usuário não autenticado.";
@@ -23,24 +19,20 @@ if (!isset($_SESSION["usuario"])) {
     exit;
 }
 
-// Abre conexão com o banco.
 $conexao = getConexao();
+$user_id = $_SESSION["usuario"]["id"] ?? 0;
 
-// Guarda o ID do usuário
-$user_id = $_SESSION["usuario"] ["id"] ?? 0;
-
-// Busca todas as tarefas do usuário
 $stmt = $conexao->prepare("
-    SELECT 
+    SELECT
         t.id,
         t.titulo,
         t.descricao,
         t.dificuldade,
-        t.data_entrega,
+        DATE(t.data_entrega) AS data_entrega,
         t.concluida,
         t.data_criacao,
-        m.id as materia_id,
-        m.nome as materia_nome,
+        m.id AS materia_id,
+        m.nome AS materia_nome,
         m.color_hex
     FROM tarefas t
     INNER JOIN materias m ON t.materia_id = m.id
@@ -54,7 +46,6 @@ $stmt->execute([
 
 $tarefas = $stmt->fetchAll();
 
-// Se não houver tarefas, retorna lista vazia
 if (!$tarefas) {
     $retorno["status"] = "ok";
     $retorno["mensagem"] = "Nenhuma tarefa encontrada.";
@@ -63,7 +54,6 @@ if (!$tarefas) {
     exit;
 }
 
-// Formata as tarefas para retornar
 $tarefasFormatadas = [];
 
 foreach ($tarefas as $tarefa) {
@@ -83,7 +73,6 @@ foreach ($tarefas as $tarefa) {
     ];
 }
 
-// Retorna sucesso com as tarefas
 $retorno["status"] = "ok";
 $retorno["mensagem"] = "Tarefas listadas com sucesso.";
 $retorno["data"] = $tarefasFormatadas;
