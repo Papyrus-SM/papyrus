@@ -170,16 +170,23 @@ export default function DashboardPage() {
         setTarefaParaEditar(null)
     }
 
-    // Inicialização: lê cache local e redireciona se não autenticado
     useEffect(() => {
         const storedUser = localStorage.getItem('papyrus_user')
+
         if (!storedUser) {
             navigate('/login')
             return
         }
 
         try {
-            setUser(JSON.parse(storedUser))
+            const parsedUser = JSON.parse(storedUser)
+
+            if (parsedUser?.papel === 'admin') {
+                navigate('/admin')
+                return
+            }
+
+            setUser(parsedUser)
         } catch {
             localStorage.removeItem('papyrus_user')
             navigate('/login')

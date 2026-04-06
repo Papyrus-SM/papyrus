@@ -48,7 +48,7 @@ $conexao = getConexao();
 // Busca no banco o usuário correspondente ao e-mail informado.
 // Também traz o hash da senha para comparação segura.
 $stmt = $conexao->prepare("
-    SELECT id, nome, email, senha_hash
+    SELECT id, nome, email, senha_hash, papel
     FROM users
     WHERE email = :email
     LIMIT 1
@@ -84,7 +84,8 @@ if (!password_verify($senha, $usuario["senha_hash"])) {
 $_SESSION["usuario"] = [
     "id" => $usuario["id"],
     "nome" => $usuario["nome"],
-    "email" => $usuario["email"]
+    "email" => $usuario["email"],
+    "papel" => $usuario["papel"]
 ];
 
 // Monta resposta de sucesso com os dados do usuário autenticado.

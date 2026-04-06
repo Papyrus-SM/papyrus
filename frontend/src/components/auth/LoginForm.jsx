@@ -3,34 +3,18 @@ import { loginUser } from '@/services/api/api_usuario.js'
 import FormFeedback from './FormFeedback'
 
 export default function LoginForm() {
-    /*
-        Estado principal do formulário de login.
-        Guarda os valores dos campos preenchidos pelo usuário.
-    */
     const [formData, setFormData] = useState({
         email: '',
         senha: '',
     })
 
-    /*
-        Estado de carregamento.
-        É usado para desabilitar o botão e alterar o texto durante a requisição.
-    */
     const [loading, setLoading] = useState(false)
 
-    /*
-        Estado de feedback visual.
-        Armazena o tipo da mensagem e o texto exibido ao usuário.
-    */
     const [feedback, setFeedback] = useState({
         type: '',
         message: '',
     })
 
-    /*
-        Atualiza dinamicamente o estado do formulário.
-        O atributo "name" do input define qual campo será modificado.
-    */
     function handleChange(event) {
         const { name, value } = event.target
         setFormData((prev) => ({
@@ -39,10 +23,6 @@ export default function LoginForm() {
         }))
     }
 
-    /*
-        Envia os dados do formulário para a API de login.
-        Também trata loading, feedback e redirecionamento após sucesso.
-    */
     async function handleSubmit(event) {
         event.preventDefault()
         setLoading(true)
@@ -60,7 +40,10 @@ export default function LoginForm() {
                 })
 
                 setTimeout(() => {
-                    window.location.href = '/dashboard'
+                    const destino =
+                        data?.data?.usuario?.papel === 'admin' ? '/admin' : '/dashboard'
+
+                    window.location.href = destino
                 }, 600)
             } else {
                 setFeedback({
@@ -79,15 +62,7 @@ export default function LoginForm() {
     }
 
     return (
-        /*
-            Card visual do formulário de login.
-            Mantém consistência com a linguagem visual da tela de registro.
-        */
         <div className="w-full max-w-md rounded-2xl border border-[#E8E8DF] bg-white/70 p-8 shadow-sm backdrop-blur-sm">
-            {/*
-                Bloco introdutório do formulário.
-                Contextualiza a ação de acesso à conta.
-            */}
             <div className="mb-8">
                 <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.14em] text-[#8A8A80]">
                     Entrar
@@ -103,9 +78,6 @@ export default function LoginForm() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-                {/*
-                    Campo de e-mail do usuário.
-                */}
                 <div>
                     <label
                         htmlFor="email"
@@ -125,9 +97,6 @@ export default function LoginForm() {
                     />
                 </div>
 
-                {/*
-                    Campo de senha do usuário.
-                */}
                 <div>
                     <label
                         htmlFor="senha"
@@ -152,10 +121,6 @@ export default function LoginForm() {
                     message={feedback.message}
                 />
 
-                {/*
-                    Botão principal de envio.
-                    Fica desabilitado durante o loading para evitar múltiplos envios.
-                */}
                 <button
                     type="submit"
                     disabled={loading}
@@ -164,9 +129,6 @@ export default function LoginForm() {
                     {loading ? 'Entrando...' : 'Entrar'}
                 </button>
 
-                {/*
-                    Ação secundária para levar o usuário à tela de cadastro.
-                */}
                 <a
                     href="/register"
                     className="block w-full rounded-xl border border-[#CBCBC2] bg-transparent px-8 py-3.5 text-center text-[15px] font-normal tracking-[0.01em] text-[#1A1A1A] transition duration-200 hover:-translate-y-[1px] hover:border-[#1A1A1A] hover:bg-[#F0F0E8]"

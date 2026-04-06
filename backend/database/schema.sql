@@ -15,7 +15,8 @@ CREATE TABLE users (
                        email            VARCHAR(150) NOT NULL UNIQUE,
                        senha_hash       VARCHAR(255) NOT NULL,
                        data_nascimento  DATE NOT NULL,
-                       genero           ENUM('masculino', 'feminino', 'prefiro_nao_dizer') NOT NULL
+                       genero           ENUM('masculino', 'feminino', 'prefiro_nao_dizer') NOT NULL,
+                       papel            ENUM('admin', 'estudante') NOT NULL DEFAULT 'estudante'
 );
 
 -- ------------------------------------------------------------
@@ -83,8 +84,7 @@ CREATE TABLE tarefas (
 );
 
 -- ------------------------------------------------------------
--- Tabela 6: stick_notes
--- Post-its/anotações rápidas do usuário no dashboard.
+-- Para a funcionalidade do usuário colocar "post-its" na tela.
 -- ------------------------------------------------------------
 CREATE TABLE sticky_notes (
                               id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -98,36 +98,8 @@ CREATE TABLE sticky_notes (
                               FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- ------------------------------------------------------------
--- Tabela 7: eventos
--- Eventos pontuais do usuário, como provas, trabalhos e revisões.
--- Opcionalmente podem estar vinculados a uma matéria.
--- ------------------------------------------------------------
-CREATE TABLE eventos (
-                         id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                         user_id          INT UNSIGNED NOT NULL,
-                         materia_id       INT UNSIGNED NULL,
-                         titulo           VARCHAR(150) NOT NULL,
-                         inicio           DATETIME NOT NULL,
-                         fim              DATETIME NULL,
-                         tipo             VARCHAR(50) NOT NULL,
-                         dia_inteiro      BOOLEAN DEFAULT FALSE,
+UPDATE users
+SET papel = 'admin'
+WHERE email = 'admin@gmail.com';
 
-                         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-                         FOREIGN KEY (materia_id) REFERENCES materias(id) ON DELETE SET NULL
-);
 
--- ------------------------------------------------------------
--- Tabela 8: lembretes
--- Lembretes independentes do usuário.
--- ------------------------------------------------------------
-CREATE TABLE lembretes (
-                           id                 INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                           user_id            INT UNSIGNED NOT NULL,
-                           titulo             VARCHAR(150) NOT NULL,
-                           data_hora          DATETIME NOT NULL,
-                           enviado            BOOLEAN DEFAULT FALSE,
-                           marcado_concluido  BOOLEAN DEFAULT FALSE,
-
-                           FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
