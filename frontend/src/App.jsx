@@ -6,6 +6,7 @@ import DashboardPage from '@/pages/DashboardPage'
 import MateriasPage from "@/pages/MateriasPage.jsx";
 import MateriaDetalhePage from "@/pages/MateriaDetalhePage.jsx";
 import StickyNotesPage from "@/pages/StickyNotesPage.jsx";
+import TarefasPage from "@/pages/TarefasPage.jsx";
 
 export default function App() {
     return (
@@ -17,6 +18,7 @@ export default function App() {
             <Route path="/materias" element={<MateriasPage />} />
             <Route path="/materias/:materiaId" element={<MateriaDetalhePage />} />
             <Route path="/sticky-notes" element={<StickyNotesPage />} />
+            <Route path="/tarefas" element={<TarefasPage />} />
         </Routes>
     )
 }

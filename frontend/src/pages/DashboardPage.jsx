@@ -1,20 +1,16 @@
-// MUDANÇAS:
-// 1. BUG CRÍTICO CORRIGIDO: MateriasPanel no Dashboard não recebia onOpenMateria,
-//    onEditClick nem onDeleteClick. Com a correção no MateriasPanel (handlers opcionais),
-//    isto funciona — mas onCreateClick agora navega para /materias como era a intenção.
-// 2. loadMaterias e loadOnboardingStatus envolvidas em useCallback para dependências
-//    corretas no useEffect que as chama, eliminando o warning de exhaustive-deps.
-// 3. Lógica de leitura do localStorage extraída para evitar duplicação com try/catch isolado.
-
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar'
 import DashboardHeader from '@/components/dashboard/DashboardHeader'
 import WelcomeCard from '@/components/dashboard/WelcomeCard'
 import MateriasPanel from '@/components/dashboard/MateriasPanel'
+import TarefasPanel from '@/components/Tarefas/TarefasPanel'
+import CreateTarefaModal from '@/components/Tarefas/CreateTarefaModal'
+import EditTarefaModal from '@/components/Tarefas/EditTarefaModal'
 import OnboardingModal from '@/components/dashboard/OnboardingModal'
 import { getOnboardingStatus, skipOnboarding, completeOnboarding } from '@/services/api/api_onboarding.js'
 import { createInitialMaterias, listMaterias } from '@/services/api/api_materias.js'
+import { listTarefas, createTarefa, editTarefa, deleteTarefa } from '@/services/api/api_tarefas.js'
 
 export default function DashboardPage() {
     const [user, setUser] = useState(null)
@@ -23,9 +19,16 @@ export default function DashboardPage() {
     const [showOnboarding, setShowOnboarding] = useState(false)
     const [loadingOnboarding, setLoadingOnboarding] = useState(false)
 
+    const [tarefas, setTarefas] = useState([])
+    const [loadingTarefas, setLoadingTarefas] = useState(true)
+    const [showCreateTarefa, setShowCreateTarefa] = useState(false)
+    const [showEditTarefa, setShowEditTarefa] = useState(false)
+    const [tarefaParaEditar, setTarefaParaEditar] = useState(null)
+    const [loadingTarefaForm, setLoadingTarefaForm] = useState(false)
+    const [loadingDeleteTarefaId, setLoadingDeleteTarefaId] = useState(null)
+
     const navigate = useNavigate()
 
-    // useCallback: estável entre renders, seguro nas dependências do useEffect
     const loadMaterias = useCallback(async () => {
         try {
             setLoadingMaterias(true)
@@ -36,6 +39,19 @@ export default function DashboardPage() {
             setMaterias([])
         } finally {
             setLoadingMaterias(false)
+        }
+    }, [])
+
+    const loadTarefas = useCallback(async () => {
+        try {
+            setLoadingTarefas(true)
+            const data = await listTarefas()
+            setTarefas(data.status === 'ok' ? data.data || [] : [])
+        } catch (error) {
+            console.error('Erro ao carregar tarefas:', error)
+            setTarefas([])
+        } finally {
+            setLoadingTarefas(false)
         }
     }, [])
 
@@ -88,6 +104,72 @@ export default function DashboardPage() {
         }
     }
 
+    async function handleCreateTarefa(payload) {
+        try {
+            setLoadingTarefaForm(true)
+            const data = await createTarefa(payload)
+            if (data.status === 'ok') {
+                await loadTarefas()
+                setShowCreateTarefa(false)
+            } else {
+                alert(data.mensagem || 'Não foi possível criar a tarefa.')
+            }
+        } catch (error) {
+            console.error('Erro ao criar tarefa:', error)
+            alert('Ocorreu um erro ao criar a tarefa.')
+        } finally {
+            setLoadingTarefaForm(false)
+        }
+    }
+
+    async function handleEditTarefa(payload) {
+        try {
+            setLoadingTarefaForm(true)
+            const data = await editTarefa(payload)
+            if (data.status === 'ok') {
+                await loadTarefas()
+                setShowEditTarefa(false)
+                setTarefaParaEditar(null)
+            } else {
+                alert(data.mensagem || 'Não foi possível editar a tarefa.')
+            }
+        } catch (error) {
+            console.error('Erro ao editar tarefa:', error)
+            alert('Ocorreu um erro ao editar a tarefa.')
+        } finally {
+            setLoadingTarefaForm(false)
+        }
+    }
+
+    async function handleDeleteTarefa(tarefa) {
+        if (!window.confirm(`Deseja excluir a tarefa "${tarefa.titulo}"?`)) return
+
+        try {
+            setLoadingDeleteTarefaId(tarefa.id)
+            const data = await deleteTarefa({ tarefa_id: tarefa.id })
+            if (data.status === 'ok') {
+                await loadTarefas()
+            } else {
+                alert(data.mensagem || 'Não foi possível excluir a tarefa.')
+            }
+        } catch (error) {
+            console.error('Erro ao excluir tarefa:', error)
+            alert('Ocorreu um erro ao excluir a tarefa.')
+        } finally {
+            setLoadingDeleteTarefaId(null)
+        }
+    }
+
+    function handleOpenEditTarefa(tarefa) {
+        setTarefaParaEditar(tarefa)
+        setShowEditTarefa(true)
+    }
+
+    function handleCloseEditTarefa() {
+        setShowEditTarefa(false)
+        setTarefaParaEditar(null)
+    }
+
     // Inicialização: lê cache local e redireciona se não autenticado
     useEffect(() => {
         const storedUser = localStorage.getItem('papyrus_user')
@@ -99,19 +181,17 @@ export default function DashboardPage() {
         try {
             setUser(JSON.parse(storedUser))
         } catch {
-            // JSON corrompido: limpa e redireciona
             localStorage.removeItem('papyrus_user')
             navigate('/login')
         }
     }, [navigate])
 
-    // Carrega dados apenas quando o usuário estiver disponível
-    // useCallback garante que loadMaterias e loadOnboardingStatus sejam dependências estáveis
     useEffect(() => {
         if (!user) return
         loadMaterias()
+        loadTarefas()
         loadOnboardingStatus()
-    }, [user, loadMaterias, loadOnboardingStatus])
+    }, [user, loadMaterias, loadTarefas, loadOnboardingStatus])
 
     return (
         <main className="min-h-screen bg-[#FAFAF7] text-[#1A1A1A]">
@@ -126,10 +206,16 @@ export default function DashboardPage() {
                         <MateriasPanel
                             materias={materias}
                             loading={loadingMaterias}
-                            // BUG FIX: navega para /materias para gerenciar — handlers de edição/delete
-                            // não são passados intencionalmente (painel do Dashboard é somente leitura)
                             onCreateClick={() => navigate('/materias')}
                             onOpenMateria={(materia) => navigate(`/materias/${materia.id}`)}
+                        />
+                        <TarefasPanel
+                            tarefas={tarefas}
+                            loading={loadingTarefas}
+                            onCreateClick={() => setShowCreateTarefa(true)}
+                            onEditClick={handleOpenEditTarefa}
+                            onDeleteClick={handleDeleteTarefa}
+                            loadingDeleteTarefaId={loadingDeleteTarefaId}
                         />
                     </div>
                 </div>
@@ -141,6 +227,23 @@ export default function DashboardPage() {
                 onSkip={handleSkipOnboarding}
                 onFinish={handleFinishOnboarding}
                 loading={loadingOnboarding}
+            />
+
+            <CreateTarefaModal
+                isOpen={showCreateTarefa}
+                onClose={() => setShowCreateTarefa(false)}
+                onSubmit={handleCreateTarefa}
+                loading={loadingTarefaForm}
+                materias={materias}
+            />
+
+            <EditTarefaModal
+                isOpen={showEditTarefa}
+                tarefa={tarefaParaEditar}
+                onClose={handleCloseEditTarefa}
+                onSubmit={handleEditTarefa}
+                loading={loadingTarefaForm}
+                materias={materias}
             />
         </main>
     )
