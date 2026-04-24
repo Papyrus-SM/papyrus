@@ -1,0 +1,52 @@
+Aqui eu estou comentando sobre o que fiz no RegisterForm.jsx
+
+Passo a passo:
+
+1. mude o initialForm:
+    ex: 
+        const initialForm = {
+            nome: '',
+            email: '',
+            senha: '',
+            data_nascimento: '',
+            genero: '',
+            quero: '', // O que vc quiser
+        }
+
+2. dentro da "async function handleSubmit(event)" crie esse código:
+    ex:
+        const payload = {
+            quero: formData.quero.trim(),
+        }
+
+        if(!payload.quero.includes('@')) {
+            console.log("erro")
+            setFeedback({
+                type: 'error',
+                message: 'Erro @',
+            })
+        }
+
+    dentro desse códgo vc deve inserir no lugar do "@" o que você quer verificar que tem no input do tipo text
+
+
+3. adicionar dentro do formulário do CRUD o label e o input que vai fazer a entrada dando o valor do "quero"
+    ex:
+        <div>
+                    <label
+                        htmlFor="quero"
+                        className="mb-2 block text-sm font-medium text-[#3F3F39]"
+                    >
+                        o que eu quero
+                    </label>
+                    <input
+                        id="quero"
+                        name="quero"
+                        type="text"
+                        value={formData.quero}
+                        onChange={handleChange}
+                        placeholder="tem que possuir '@'"
+                        className="w-full rounded-xl border border-[#D9D9D0] bg-[#FAFAF7] px-4 py-3 text-sm text-[#1A1A1A] outline-none transition focus:border-[#1A1A1A]"
+                        required
+                    />
+                </div>
