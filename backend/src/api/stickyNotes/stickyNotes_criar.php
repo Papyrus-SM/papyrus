@@ -26,7 +26,7 @@ $retorno = [
 // Esse endpoint espera receber os dados do usuário em JSON.
 $body = getBody();
 
-$user_id = 1; // aqui vai ficar a sessão para definir que usuario esta usando  $user_id = $_SESSION['user_id'];
+$user_id = $_SESSION["usuario"]["id"]; // aqui vai ficar a sessão para definir que usuario esta usando  $user_id = $_SESSION["usuario"]["id"];
 
 
 // Coleta e sanitização inicial dos dados recebidos.
