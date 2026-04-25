@@ -5,6 +5,7 @@ import FormFeedback from "../auth/FormFeedback";
 const initialStickyNote = {
     titulo: '',
     anotacao:  '',
+    cor: '#fdf28e',
 }
 
 
@@ -36,6 +37,7 @@ export default function FormStickyNote({setOpenModal}) {
     }
 
     async function handleSubmit() {
+        // e.preventDefault() /* previne o comportamento padrão do formulário, que é recarregar a página */
         setLoading(true) /* ativa o estado de carregamento */
         setFeedback({ type: '', mensagem: '' }) /* limpa mensagens anteriores */
 
@@ -57,7 +59,7 @@ export default function FormStickyNote({setOpenModal}) {
             }
         }
         finally {
-            setLoading(false);
+            setLoading(false); 
         }
     }
 
