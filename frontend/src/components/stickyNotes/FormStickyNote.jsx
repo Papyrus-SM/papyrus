@@ -5,6 +5,7 @@ import FormFeedback from "../auth/FormFeedback";
 const initialStickyNote = {
     titulo: '',
     anotacao: '',
+    //teste: '', // ================== Autoria ==========
     cor: '#fdf28e',
 }
 
@@ -39,7 +40,35 @@ export default function FormStickyNote({ setOpenModal, reload }) {
     async function handleSubmit(e) {
         e.preventDefault() /* previne o comportamento padrão do formulário, que é recarregar a página */
         setLoading(true) /* ativa o estado de carregamento */
-        setFeedback({ type: '', mensagem: '' }) /* limpa mensagens anteriores */
+        setFeedback({ type: '', message: '' }) /* limpa mensagens anteriores */
+
+        const payload = {
+            titulo: formData.titulo.trim(),
+            anotacao: formData.anotacao,
+            //teste: formData.teste.trim(),   // ============= Autoria | Teste @ ==========
+            cor: formData.cor,
+        }
+
+        
+        if(!payload.titulo && !payload.anotacao) {
+            setFeedback({
+                type: 'error',
+                message: 'Esta vaziu'
+            })
+            return
+        }
+
+
+        /* ========= Autoria | Teste @ ===========
+        if (!payload.teste.includes('@')) {
+            setFeedback({
+                type: 'error',
+                message: "teste faltou @"
+            })
+            return
+        }
+
+        */
 
         try {
             const data = await registerStickyNotes(formData); /* aqui envia os dados e pega o retorno do envio */
@@ -76,6 +105,10 @@ export default function FormStickyNote({ setOpenModal, reload }) {
                     <label htmlFor="titulo" className="p-2">Titulo</label>
                     <input type="text" name="titulo" value={formData.titulo} onChange={handleChange} className="p-2 bg-gray-400/20 rounded-md" id="titulo" placeholder="Titulo" />
 
+{/* ================ Autoria | Teste @ =============
+                    <label htmlFor="teste" className="p-2">Teste</label>
+                    <input type="text" name="teste" value={formData.teste} onChange={handleChange} className="p-2 bg-gray-400/20 rounded-md" id="teste" placeholder="insira" />
+*/}
                     <label htmlFor="anotacao" className="p-2">Anotação</label>
                     <textarea name="anotacao" value={formData.anotacao} onChange={handleChange} className="p-2 bg-gray-400/20 rounded-md" id="anotacao" cols="30" rows="10" placeholder="Escreva sua nota aqui....."></textarea>
 
