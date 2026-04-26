@@ -4,12 +4,12 @@ import FormFeedback from "../auth/FormFeedback";
 
 const initialStickyNote = {
     titulo: '',
-    anotacao:  '',
+    anotacao: '',
     cor: '#fdf28e',
 }
 
 
-export default function FormStickyNote({setOpenModal}) {
+export default function FormStickyNote({ setOpenModal, reload }) {
 
 
     const [formData, setFormData] = useState(initialStickyNote)
@@ -36,8 +36,8 @@ export default function FormStickyNote({setOpenModal}) {
         }))
     }
 
-    async function handleSubmit() {
-        // e.preventDefault() /* previne o comportamento padrão do formulário, que é recarregar a página */
+    async function handleSubmit(e) {
+        e.preventDefault() /* previne o comportamento padrão do formulário, que é recarregar a página */
         setLoading(true) /* ativa o estado de carregamento */
         setFeedback({ type: '', mensagem: '' }) /* limpa mensagens anteriores */
 
@@ -51,6 +51,7 @@ export default function FormStickyNote({setOpenModal}) {
                 });
 
                 setFormData(initialStickyNote);
+                if (reload) reload(); // Recarrega a lista de notas
             } else {
                 setFeedback({
                     type: "error",
@@ -59,7 +60,7 @@ export default function FormStickyNote({setOpenModal}) {
             }
         }
         finally {
-            setLoading(false); 
+            setLoading(false);
         }
     }
 
@@ -68,12 +69,12 @@ export default function FormStickyNote({setOpenModal}) {
         <>
             <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
                 <form onSubmit={handleSubmit} className="bg-white w-xl flex flex-col p-8 rounded-md">
-                    <button onClick={() => {setOpenModal(false)}} className="self-end p-4 absolute text-xl cursor-pointer">X</button>
+                    <button onClick={() => { setOpenModal(false) }} className="self-end p-4 absolute text-xl cursor-pointer">X</button>
                     <h1 className="mt-2 font-serif-display text-4xl text-center py-2 tracking-[-0.03em] text-[#1A1A1A]">
                         Criar Nota
                     </h1>
                     <label htmlFor="titulo" className="p-2">Titulo</label>
-                    <input type="text" name="titulo" value={formData.titulo} onChange={handleChange} className="p-2 bg-gray-400/20 rounded-md" id="titulo" placeholder="Titulo"/>
+                    <input type="text" name="titulo" value={formData.titulo} onChange={handleChange} className="p-2 bg-gray-400/20 rounded-md" id="titulo" placeholder="Titulo" />
 
                     <label htmlFor="anotacao" className="p-2">Anotação</label>
                     <textarea name="anotacao" value={formData.anotacao} onChange={handleChange} className="p-2 bg-gray-400/20 rounded-md" id="anotacao" cols="30" rows="10" placeholder="Escreva sua nota aqui....."></textarea>
@@ -82,10 +83,10 @@ export default function FormStickyNote({setOpenModal}) {
 
                     <div className="flex gap-3 mt-4">
 
-                        {["#ffffff", "#fdf28e", "#fc9791", "#abffae", "#aed9ff", "#e287e4"].map((cor) =>(
+                        {["#ffffff", "#fdf28e", "#fc9791", "#abffae", "#aed9ff", "#e287e4"].map((cor) => (
                             <label key={cor} className="cursor-pointer">
                                 <input type="radio" name="cor" value={cor} checked={formData.cor === cor} className="hidden" onChange={handleChange} />
-                                <div className={`w-10 h-10 rounded-full border-1 transition ${formData.cor === cor ? "border-black scale-110": "border-gray-300"}`} style={{backgroundColor: cor}} />
+                                <div className={`w-10 h-10 rounded-full border-1 transition ${formData.cor === cor ? "border-black scale-110" : "border-gray-300"}`} style={{ backgroundColor: cor }} />
                             </label>
                         ))}
 

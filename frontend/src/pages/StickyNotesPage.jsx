@@ -51,7 +51,7 @@ export default function StickyNotesPage() {
                 <DashboardSidebar user={user} setUser={setUser} />
 
                 <div className="min-h-screen flex-1">
-                    <StickyNotesHeader />
+                    <StickyNotesHeader reload={loadNotes} />
 
                     <div className="px-8 py-8">
                         <StickyNotesMain anotacoes={anotacoes} reload={loadNotes}/> {/* aqui passa as anotacoes para o componente que vai mostrar elas na tela */}

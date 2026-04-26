@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import FormStickyNote from "./FormStickyNote"
 
-export default function StickyNotesHeader() {
+export default function StickyNotesHeader({ reload }) {
     const [openModal, setOpenModal] = useState(false);
     return (
         <header className="flex items-center justify-between border-b border-[#E8E8DF] px-8 py-6">
@@ -17,7 +17,7 @@ export default function StickyNotesHeader() {
                 </button>
             </div>
             <div id="modal-form-sticky-notes">
-                {openModal && <FormStickyNote setOpenModal={setOpenModal}/>}
+                {openModal && <FormStickyNote setOpenModal={setOpenModal} reload={reload}/>}
             </div>
         </header>
     )
