@@ -8,6 +8,7 @@ export default function UpdateStickyNote({setOpenModal, anotacao, reload}) {
     const initialStickyNote = {
         id: anotacao.id,
         titulo: anotacao.titulo,
+        //nome: '', // ======================================
         anotacao:  anotacao.texto,
         cor: anotacao.cor,
     }
@@ -37,7 +38,31 @@ export default function UpdateStickyNote({setOpenModal, anotacao, reload}) {
     async function handleSubmit(e) {
         e.preventDefault()
         setLoading(true) /* ativa o estado de carregamento */
-        setFeedback({ type: '', mensagem: '' }) /* limpa mensagens anteriores */
+        setFeedback({ type: '', message: '' }) /* limpa mensagens anteriores */
+
+        const payload = {
+            titulo: formData.titulo.trim(),
+            // nome: formData.nome.trim(), =================================
+            anotacao: formData.anotacao,
+        }
+
+        if(payload.titulo && payload.anotacao.trim() === '') {
+            setFeedback({
+                type: 'error',
+                message: 'Esta vaziu!'
+            })
+            return
+        }
+
+        /* =========================================
+        if (!payload.nome.includes('A')) {
+            setFeedback({
+                type: 'error',
+                message: 'Nome não contem A',
+            })
+            return
+        }
+            */
 
         try {
             const data = await updateStickyNotes(formData); /* aqui envia os dados e pega o retorno do envio */
@@ -76,6 +101,11 @@ export default function UpdateStickyNote({setOpenModal, anotacao, reload}) {
                     </h1>
                     <label htmlFor="titulo" className="p-2">Titulo</label>
                     <input type="text" name="titulo" value={formData.titulo} onChange={handleChange} className="p-2 bg-gray-400/20 rounded-md" id="titulo" placeholder="Titulo"/>
+
+{/* =====================================================
+                    <label htmlFor="nome" className="p-2">nome</label>
+                    <input type="text" name="nome" value={formData.nome} onChange={handleChange} className="p-2 bg-gray-400/20 rounded-md" id="nome" placeholder="Insira seu nome"/>
+*/}
 
                     <label htmlFor="anotacao" className="p-2">Anotação</label>
                     <textarea name="anotacao" value={formData.anotacao} onChange={handleChange} className="p-2 bg-gray-400/20 rounded-md" id="anotacao" cols="30" rows="10" placeholder="Escreva sua nota aqui....."></textarea>
