@@ -40,7 +40,7 @@ if (
     empty($titulo) && empty($anotacao) // empty() verifica se a string é vazia ou contém apenas espaços em branco
 ) {
     $retorno["status"] = "nok";
-    $retorno["mensagem"] = "Tudo vaziu...";
+    $retorno["mensagem"] = "Esta vaziu...";
 
     echo json_encode($retorno);
     exit;
