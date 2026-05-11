@@ -3,6 +3,7 @@ import LandingPage from '@/pages/LandingPage'
 import RegisterPage from '@/pages/RegisterPage'
 import LoginPage from '@/pages/LoginPage'
 import DashboardPage from '@/pages/DashboardPage'
+import FlashCards from "@/pages/FlashCardsPage.jsx";
 import MateriasPage from "@/pages/MateriasPage.jsx";
 import MateriaDetalhePage from "@/pages/MateriaDetalhePage.jsx";
 import StickyNotesPage from "@/pages/StickyNotesPage.jsx";
@@ -19,6 +20,7 @@ export default function App() {
             <Route path="/materias" element={<MateriasPage />} />
             <Route path="/materias/:materiaId" element={<MateriaDetalhePage />} />
             <Route path="/sticky-notes" element={<StickyNotesPage />} />
+            <Route path="/flashcards" element={<FlashCards />} />
             <Route path="/tarefas" element={<TarefasPage />} />
             <Route path="/admin" element={<AdminPage />} />
         </Routes>
