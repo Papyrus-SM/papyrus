@@ -14,6 +14,7 @@ const items = [
     { label: 'Tarefas', to: '/tarefas', disabled: false },
     { label: 'Calendário', to: null, disabled: true },
     { label: 'Métodos', to: null, disabled: true },
+    { label: 'Flashcards', to: '/flashcards', disabled: false },
 ]
 
 export default function DashboardSidebar({ user, setUser }) {
