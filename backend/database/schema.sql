@@ -98,6 +98,21 @@ CREATE TABLE sticky_notes (
                               FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- Tabela: cadernos
+-- Cadernos vinculados a uma matéria específica.
+-- Cada matéria pode possuir vários cadernos.
+-- ------------------------------------------------------------
+CREATE TABLE caderno (
+							
+						   id                 INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                           materia_id         INT UNSIGNED NULL,
+                           titulo             VARCHAR(150) NOT NULL,
+                           data_criacao       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                           
+						   FOREIGN KEY        (materia_id) REFERENCES materias(id) ON DELETE CASCADE
+);
+
+
 UPDATE users
 SET papel = 'admin'
 WHERE email = 'admin@gmail.com';
