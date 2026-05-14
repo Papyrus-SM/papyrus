@@ -75,7 +75,12 @@ export default function MateriasPanel({
                                         <h3 className="text-lg font-medium text-[#1A1A1A]">{materia.nome}</h3>
                                     </div>
 
-                                    <p className="mt-3 min-h-[48px] text-sm leading-6 text-[#5A5A52]">
+                                    <p className="mt-2 min-h-[34px] text text-[#5A5A52]">
+                                        {'Prof: '}{materia.professor || 'Sem professor'}
+                                    </p>
+
+
+                                    <p className="text-sm leading-2 text-[#5A5A52]">
                                         {materia.descricao || 'Sem descrição cadastrada.'}
                                     </p>
 

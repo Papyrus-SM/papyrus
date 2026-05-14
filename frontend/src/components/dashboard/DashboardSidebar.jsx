@@ -12,6 +12,7 @@ const items = [
     { label: 'Matérias', to: '/materias', disabled: false },
     { label: 'Post-its', to: '/sticky-notes', disabled: false },
     { label: 'Tarefas', to: '/tarefas', disabled: false },
+    { label: 'Cadernos', to: '/cadernos', disabled: false },
     { label: 'Calendário', to: null, disabled: true },
     { label: 'Métodos', to: null, disabled: true },
 ]

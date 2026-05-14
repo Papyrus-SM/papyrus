@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from 'react'
 
 const initialForm = {
     nome: '',
+    professor: '',
     descricao: '',
     color_hex: '#F8FF97',
 }
@@ -59,6 +60,7 @@ export default function CreateMateriaModal({ isOpen, onClose, onSubmit, loading 
 
         const payload = {
             nome: formData.nome.trim(),
+            professor: formData.professor.trim(),
             descricao: formData.descricao.trim(),
             color_hex: formData.color_hex,
         }
@@ -107,6 +109,20 @@ export default function CreateMateriaModal({ isOpen, onClose, onSubmit, loading 
                             placeholder="Ex.: Engenharia de Software"
                             className="w-full rounded-xl border border-[#D9D9D0] bg-[#FAFAF7] px-4 py-3 text-sm text-[#1A1A1A] outline-none transition focus:border-[#1A1A1A]"
                             required
+                        />
+                    </div>
+
+                    <div>
+                        <label htmlFor="professor" className="mb-2 block text-sm font-medium text-[#3F3F39]">Professor</label>
+                        <input
+                            ref={firstInputRef}
+                            id="professor"
+                            name="professor"
+                            type="text"
+                            value={formData.professor}
+                            onChange={handleChange}
+                            placeholder="Ex.: Algusto"
+                            className="w-full rounded-xl border border-[#D9D9D0] bg-[#FAFAF7] px-4 py-3 text-sm text-[#1A1A1A] outline-none transition focus:border-[#1A1A1A]"
                         />
                     </div>
 

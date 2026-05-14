@@ -160,6 +160,10 @@ export default function MateriaDetalhePage() {
                                     </h2>
 
                                     <p className="mt-4 max-w-3xl text-[16px] leading-8 text-[#5A5A52]">
+                                        {'Prof: '}{materia.professor || 'Matéria sem professor.'}
+                                    </p>
+
+                                    <p className="mt-4 max-w-3xl text-[16px] leading-8 text-[#5A5A52]">
                                         {materia.descricao || 'Esta matéria ainda não possui uma descrição cadastrada.'}
                                     </p>
                                 </>

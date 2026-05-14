@@ -29,7 +29,7 @@ $conexao = getConexao();
 
 // Busca todas as matérias do usuário autenticado.
 $stmt = $conexao->prepare("
-    SELECT id, nome, descricao, color_hex, horas_semanais
+    SELECT id, nome, descricao, color_hex, horas_semanais, professor
     FROM materias
     WHERE user_id = :user_id
     ORDER BY id ASC

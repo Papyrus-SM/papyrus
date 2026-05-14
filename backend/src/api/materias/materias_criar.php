@@ -32,6 +32,7 @@ $nome = trim($body["nome"] ?? "");
 $descricao = trim($body["descricao"] ?? "");
 $color_hex = trim($body["color_hex"] ?? "#F8FF97");
 $horas_semanais = $body["horas_semanais"] ?? 0;
+$professor = $body["professor"] ?? "Sem professor";
 
 // Validação do nome.
 if (empty($nome)) {
@@ -83,8 +84,8 @@ $conexao = getConexao();
 
 // Insere a nova matéria.
 $stmt = $conexao->prepare("
-    INSERT INTO materias (user_id, nome, descricao, color_hex, horas_semanais)
-    VALUES (:user_id, :nome, :descricao, :color_hex, :horas_semanais)
+    INSERT INTO materias (user_id, nome, descricao, color_hex, horas_semanais, professor)
+    VALUES (:user_id, :nome, :descricao, :color_hex, :horas_semanais, :professor)
 ");
 
 $executou = $stmt->execute([
@@ -92,7 +93,8 @@ $executou = $stmt->execute([
     ":nome" => $nome,
     ":descricao" => $descricao ?: null,
     ":color_hex" => $color_hex,
-    ":horas_semanais" => $horas_semanais
+    ":horas_semanais" => $horas_semanais,
+    ":professor" => $professor
 ]);
 
 if ($executou) {
@@ -106,7 +108,8 @@ if ($executou) {
             "nome" => $nome,
             "descricao" => $descricao ?: null,
             "color_hex" => $color_hex,
-            "horas_semanais" => $horas_semanais
+            "horas_semanais" => $horas_semanais,
+            "professor" => $professor
         ]
     ];
 } else {

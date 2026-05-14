@@ -8,6 +8,9 @@ import MateriaDetalhePage from "@/pages/MateriaDetalhePage.jsx";
 import StickyNotesPage from "@/pages/StickyNotesPage.jsx";
 import TarefasPage from "@/pages/TarefasPage.jsx";
 import AdminPage from "@/pages/AdminPage.jsx"
+import CadernoMain from './components/cadernos/CadernoMain'
+import CadernosPage from '@/pages/CadernosPage'
+import CadernoDetalhePage from './pages/CadernoDetalhePage'
 
 export default function App() {
     return (
@@ -19,6 +22,8 @@ export default function App() {
             <Route path="/materias" element={<MateriasPage />} />
             <Route path="/materias/:materiaId" element={<MateriaDetalhePage />} />
             <Route path="/sticky-notes" element={<StickyNotesPage />} />
+            <Route path="/cadernos" element={<CadernosPage />} />
+            <Route path="/cadernos/:cadernoId" element={<CadernoDetalhePage />} />
             <Route path="/tarefas" element={<TarefasPage />} />
             <Route path="/admin" element={<AdminPage />} />
         </Routes>
