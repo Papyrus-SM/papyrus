@@ -23,11 +23,22 @@ $retorno = [
     "mensagem" => "",
     "data" => []
 ];
+    
+    
+// Apenas usuários autenticados podem listar suas notas.
+if (!isset($_SESSION["usuario"])) {
+    $retorno["status"] = "nok";
+    $retorno["mensagem"] = "Usuário não autenticado.";
+    
+    echo json_encode($retorno);
+    exit;
+}
+        
 
 try {
 
-    $stmt = $conexao->prepare("SELECT * FROM sticky_notes"); // aqui tem que ser o id do usuario para mostrar somente as notas dele, depois que tiver a sessão funcionando $stmt = $conexao->prepare("SELECT * FROM sticky_notes WHERE user_id = :user_id"); $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-    $stmt->execute(); // executa a consulta SQL
+    $stmt = $conexao->prepare("SELECT * FROM sticky_notes where user_id = :id"); // aqui tem que ser o id do usuario para mostrar somente as notas dele, depois que tiver a sessão funcionando $stmt = $conexao->prepare("SELECT * FROM sticky_notes WHERE user_id = :user_id"); $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+    $stmt->execute([":id" => $_SESSION["usuario"]["id"]]); // executa a consulta SQL
 
     $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC); // fetchAll() retorna todas as linhas do resultado da consulta como um array associativo. Cada elemento do array é um array associativo representando uma linha da tabela sticky_notes, com as chaves correspondendo aos nomes das colunas (id, titulo, texto, cor, user_id, etc.).
 
