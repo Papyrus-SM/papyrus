@@ -1,16 +1,14 @@
-
-
 const noop = () => {}
 
 export default function FlashcardsPanel({
-                                          flashcards,
-                                          loading,
-                                          onCreateClick = noop,
-                                          onEditClick,
-                                          onDeleteClick,
-                                          onOpenFlashcard,
-                                          loadingDeleteFlashcardId = null,
-                                      }) {
+    flashcards,
+    loading,
+    onCreateClick = noop,
+    onEditClick,
+    onDeleteClick,
+    onOpenFlashcard,
+    loadingDeleteFlashcardId = null,
+}) {
     // Acessibilidade: abre a flashcard via teclado apenas se o handler existir
     function handleCardKeyDown(event, flashcard) {
         if ((event.key === 'Enter' || event.key === ' ') && onOpenFlashcard) {

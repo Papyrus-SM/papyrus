@@ -3,9 +3,10 @@ import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar'
 import DashboardHeader from '@/components/dashboard/DashboardHeader'
-import FlashcardsPanel from '@/components/dashboard/FlashCardsPanel'
+import FlashcardsPanel from '@/components/flashCards/FlashcardsPanel'
 import FeedbackToast from '@/components/ui/FeedbackToast'
-import { listFlashcards } from '@/services/api/api_flashcards.js'
+import CreateFlashcardModal from '@/components/flashCards/CreateFlashcardModal'
+import { listFlashcards, createFlashcard } from '@/services/api/api_flashcards.js'
 import { validateSession } from '@/services/api/api_usuario.js'
 
 export default function FlashCardsPage() {
@@ -14,6 +15,7 @@ export default function FlashCardsPage() {
     const [loadingPage, setLoadingPage] = useState(true)
     const [loadingFlashcards, setLoadingFlashcards] = useState(true)
     const [feedback, setFeedback] = useState({ open: false, type: 'success', message: '' })
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 
     const navigate = useNavigate()
 
@@ -72,6 +74,24 @@ export default function FlashCardsPage() {
         }
     }
 
+    async function handleCreateFlashcard(payload) {
+        try {
+            const data = await createFlashcard(payload.pergunta, payload.resposta)
+
+            if (data.status === 'ok') {
+                setIsCreateModalOpen(false)
+                showFeedback('success', 'Flashcard criada com sucesso!')
+                // Recarregar a lista de flashcards
+                loadFlashcards()
+            } else {
+                showFeedback('error', data.mensagem || 'Erro ao criar flashcard.')
+            }
+        } catch (error) {
+            console.error('Erro ao criar flashcard:', error)
+            showFeedback('error', 'Ocorreu um erro ao criar a flashcard.')
+        }
+    }
+
     useEffect(() => { bootstrapSession() }, [bootstrapSession])
     useEffect(() => { if (user) loadFlashcards() }, [user, loadFlashcards])
 
@@ -93,7 +113,7 @@ export default function FlashCardsPage() {
                                 <FlashcardsPanel
                                     flashcards={flashcards}
                                     loading={loadingFlashcards}
-                                    onCreateClick={() => showFeedback('info', 'Em breve você poderá criar novas flashcards.')}
+                                    onCreateClick={() => setIsCreateModalOpen(true)}
                                     onEditClick={() => showFeedback('info', 'Em breve você poderá editar flashcards.')}
                                     onDeleteClick={() => showFeedback('info', 'Em breve você poderá excluir flashcards.')}
                                     onOpenFlashcard={handleOpenFlashcard}
@@ -109,6 +129,13 @@ export default function FlashCardsPage() {
                 type={feedback.type}
                 message={feedback.message}
                 onClose={() => setFeedback((prev) => ({ ...prev, open: false }))}
+            />
+
+            <CreateFlashcardModal
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+                onSubmit={handleCreateFlashcard}
+                loading={false}
             />
         </>
     )
