@@ -98,6 +98,35 @@ CREATE TABLE sticky_notes (
                               FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- ------------------------------------------------------------
+-- Tabela 7: chat_conversas
+-- Cada conversa pertence a um único usuário (1:N).
+-- Armazena o histórico de conversas com a IA do sistema.
+-- ------------------------------------------------------------
+CREATE TABLE chat_conversas (
+                                id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                                user_id     INT UNSIGNED NOT NULL,
+                                titulo      VARCHAR(150) DEFAULT 'Nova conversa',
+                                criada_em   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+                                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- ------------------------------------------------------------
+-- Tabela 8: chat_mensagens
+-- Cada mensagem pertence a uma conversa.
+-- O campo 'tipo' define se é do usuário ou da IA.
+-- ------------------------------------------------------------
+CREATE TABLE chat_mensagens (
+                                id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                                conversa_id     INT UNSIGNED NOT NULL,
+                                tipo            ENUM('user', 'assistant') NOT NULL,
+                                conteudo        TEXT NOT NULL,
+                                criada_em       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+                                FOREIGN KEY (conversa_id) REFERENCES chat_conversas(id) ON DELETE CASCADE
+);
+
 UPDATE users
 SET papel = 'admin'
 WHERE email = 'admin@gmail.com';
