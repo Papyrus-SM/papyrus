@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import LandingPage from '@/pages/LandingPage'
 import RegisterPage from '@/pages/RegisterPage'
 import LoginPage from '@/pages/LoginPage'
@@ -8,19 +8,35 @@ import MateriaDetalhePage from "@/pages/MateriaDetalhePage.jsx";
 import StickyNotesPage from "@/pages/StickyNotesPage.jsx";
 import TarefasPage from "@/pages/TarefasPage.jsx";
 import AdminPage from "@/pages/AdminPage.jsx"
+import ChatButton from "@/components/chat/ChatButton"
 
 export default function App() {
+    const location = useLocation()
+
+    // O botão de chat aparece em todas as páginas logadas, exceto:
+    // - Landing page (/)
+    // - Login (/login)
+    // - Registro (/register)
+    // - Painel admin (/admin)
+    const publicPaths = ['/', '/login', '/register', '/admin']
+    const showChat = !publicPaths.includes(location.pathname)
+
     return (
-        <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/materias" element={<MateriasPage />} />
-            <Route path="/materias/:materiaId" element={<MateriaDetalhePage />} />
-            <Route path="/sticky-notes" element={<StickyNotesPage />} />
-            <Route path="/tarefas" element={<TarefasPage />} />
-            <Route path="/admin" element={<AdminPage />} />
-        </Routes>
+        <>
+            <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/materias" element={<MateriasPage />} />
+                <Route path="/materias/:materiaId" element={<MateriaDetalhePage />} />
+                <Route path="/sticky-notes" element={<StickyNotesPage />} />
+                <Route path="/tarefas" element={<TarefasPage />} />
+                <Route path="/admin" element={<AdminPage />} />
+            </Routes>
+
+            {/* Botão flutuante do chat (visível em todas as páginas logadas) */}
+            {showChat && <ChatButton />}
+        </>
     )
 }
