@@ -1,6 +1,10 @@
 import { useState } from 'react'
 
 const noop = () => {}
+const CARD_FLIP_STYLE = {
+    transformStyle: 'preserve-3d',
+    transition: 'transform 0.5s ease',
+}
 
 export default function FlashcardsPanel({
     flashcards,
@@ -10,24 +14,24 @@ export default function FlashcardsPanel({
     onDeleteClick,
     loadingDeleteFlashcardId = null,
 }) {
-    const [flippedFlashcards, setFlippedFlashcards] = useState(new Set())
+    const [flippedFlashcards, setFlippedFlashcards] = useState(() => new Set())
 
-    function toggleFlashcardFlip(flashcard) {
+    function toggleFlashcardFlip(flashcardId) {
         setFlippedFlashcards((previous) => {
             const next = new Set(previous)
-            if (next.has(flashcard.id)) {
-                next.delete(flashcard.id)
+            if (next.has(flashcardId)) {
+                next.delete(flashcardId)
             } else {
-                next.add(flashcard.id)
+                next.add(flashcardId)
             }
             return next
         })
     }
 
-    function handleCardKeyDown(event, flashcard) {
+    function handleCardKeyDown(event, flashcardId) {
         if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault()
-            toggleFlashcardFlip(flashcard)
+            toggleFlashcardFlip(flashcardId)
         }
     }
 
@@ -62,29 +66,31 @@ export default function FlashcardsPanel({
                         {flashcards.map((flashcard) => {
                             const isDeleting = loadingDeleteFlashcardId === flashcard.id
                             const isFlipped = flippedFlashcards.has(flashcard.id)
+                            const flashcardColor = flashcard.color_hex || '#F8FF97'
 
                             return (
                                 <article
                                     key={flashcard.id}
                                     role="button"
                                     tabIndex={0}
-                                    onClick={() => toggleFlashcardFlip(flashcard)}
-                                    onKeyDown={(e) => handleCardKeyDown(e, flashcard)}
+                                    aria-label={`Flashcard: ${flashcard.pergunta}`}
+                                    onClick={() => toggleFlashcardFlip(flashcard.id)}
+                                    onKeyDown={(e) => handleCardKeyDown(e, flashcard.id)}
                                     style={{ perspective: 1000 }}
                                     className="rounded-2xl border border-[#E8E8DF] bg-transparent p-5 transition hover:-translate-y-[1px] hover:border-[#D4D4CB] cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
                                 >
                                     <div
                                         className="relative h-full min-h-[160px]"
-                                        style={{ transformStyle: 'preserve-3d', transition: 'transform 0.5s ease' , transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'}}
+                                        style={{ ...CARD_FLIP_STYLE, transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
                                     >
                                         <div
-                                            className="absolute inset-0 rounded-2xl border border-[#E8E8DF] bg-[#FAFAF7] p-5"
+                                            className="absolute inset-0 flex flex-col rounded-2xl border border-[#E8E8DF] bg-[#FAFAF7] p-5"
                                             style={{ backfaceVisibility: 'hidden' }}
                                         >
                                             <div className="flex items-center gap-3">
                                                 <div
                                                     className="h-3 w-3 rounded-full border border-black/10"
-                                                    style={{ backgroundColor: flashcard.color_hex || '#F8FF97' }}
+                                                    style={{ backgroundColor: flashcardColor }}
                                                 />
                                                 <h3 className="text-lg font-medium text-[#1A1A1A]">Pergunta</h3>
                                             </div>
@@ -92,16 +98,47 @@ export default function FlashcardsPanel({
                                             <p className="mt-3 min-h-[48px] text-sm leading-6 text-[#5A5A52]">
                                                 {flashcard.pergunta || 'Sem pergunta cadastrada.'}
                                             </p>
+
+                                            {(onEditClick || onDeleteClick) && (
+                                                <div className="mt-auto flex flex-wrap gap-3">
+                                                    {onEditClick && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation()
+                                                                onEditClick(flashcard)
+                                                            }}
+                                                            className="rounded-xl border border-[#CBCBC2] px-4 py-2 text-sm text-[#1A1A1A] transition hover:bg-[#F0F0E8]"
+                                                        >
+                                                            Editar
+                                                        </button>
+                                                    )}
+
+                                                    {onDeleteClick && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation()
+                                                                onDeleteClick(flashcard)
+                                                            }}
+                                                            disabled={isDeleting}
+                                                            className="rounded-xl border border-[#D9CACA] px-4 py-2 text-sm text-[#7A2E2E] transition hover:bg-[#FBF3F3] disabled:opacity-70"
+                                                        >
+                                                            {isDeleting ? 'Excluindo...' : 'Excluir'}
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            )}
                                         </div>
 
                                         <div
-                                            className="absolute inset-0 rounded-2xl border border-[#E8E8DF] bg-[#FAFAF7] p-5"
+                                            className="absolute inset-0 flex flex-col rounded-2xl border border-[#E8E8DF] bg-[#FAFAF7] p-5"
                                             style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
                                         >
                                             <div className="flex items-center gap-3">
                                                 <div
                                                     className="h-3 w-3 rounded-full border border-black/10"
-                                                    style={{ backgroundColor: flashcard.color_hex || '#F8FF97' }}
+                                                    style={{ backgroundColor: flashcardColor }}
                                                 />
                                                 <h3 className="text-lg font-medium text-[#1A1A1A]">Resposta</h3>
                                             </div>
@@ -109,40 +146,39 @@ export default function FlashcardsPanel({
                                             <p className="mt-3 min-h-[48px] text-sm leading-6 text-[#5A5A52]">
                                                 {flashcard.resposta || 'Sem resposta cadastrada.'}
                                             </p>
+
+                                            {(onEditClick || onDeleteClick) && (
+                                                <div className="mt-auto flex flex-wrap gap-3">
+                                                    {onEditClick && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation()
+                                                                onEditClick(flashcard)
+                                                            }}
+                                                            className="rounded-xl border border-[#CBCBC2] px-4 py-2 text-sm text-[#1A1A1A] transition hover:bg-[#F0F0E8]"
+                                                        >
+                                                            Editar
+                                                        </button>
+                                                    )}
+
+                                                    {onDeleteClick && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation()
+                                                                onDeleteClick(flashcard)
+                                                            }}
+                                                            disabled={isDeleting}
+                                                            className="rounded-xl border border-[#D9CACA] px-4 py-2 text-sm text-[#7A2E2E] transition hover:bg-[#FBF3F3] disabled:opacity-70"
+                                                        >
+                                                            {isDeleting ? 'Excluindo...' : 'Excluir'}
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
-
-                                    {/* BUG FIX: Botões de ação só renderizados se os handlers forem fornecidos */}
-                                    {(onEditClick || onDeleteClick) && (
-                                        <div className="mt-5 flex flex-wrap gap-3">
-                                            {onEditClick && (
-                                                <button
-                                                    type="button"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation()
-                                                        onEditClick(flashcard)
-                                                    }}
-                                                    className="rounded-xl border border-[#CBCBC2] px-4 py-2 text-sm text-[#1A1A1A] transition hover:bg-[#F0F0E8]"
-                                                >
-                                                    Editar
-                                                </button>
-                                            )}
-
-                                            {onDeleteClick && (
-                                                <button
-                                                    type="button"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation()
-                                                        onDeleteClick(flashcard)
-                                                    }}
-                                                    disabled={isDeleting}
-                                                    className="rounded-xl border border-[#D9CACA] px-4 py-2 text-sm text-[#7A2E2E] transition hover:bg-[#FBF3F3] disabled:opacity-70"
-                                                >
-                                                    {isDeleting ? 'Excluindo...' : 'Excluir'}
-                                                </button>
-                                            )}
-                                        </div>
-                                    )}
                                 </article>
                             )
                         })}

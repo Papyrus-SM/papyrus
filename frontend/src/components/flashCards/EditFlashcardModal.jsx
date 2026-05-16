@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 
+const initialForm = {
+    pergunta: '',
+    resposta: '',
+}
+
 export default function EditFlashcardModal({ isOpen, onClose, onSubmit, loading = false, flashcard = null }) {
-    const [formData, setFormData] = useState({ pergunta: '', resposta: '' })
+    const [formData, setFormData] = useState(initialForm)
     const [error, setError] = useState('')
     const firstInputRef = useRef(null)
 
