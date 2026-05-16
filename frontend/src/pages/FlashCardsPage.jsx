@@ -68,12 +68,6 @@ export default function FlashCardsPage() {
         }
     }, [])
 
-    function handleOpenFlashcard(flashcard) {
-        if (flashcard?.id) {
-            navigate(`/flashcards/${flashcard.id}`)
-        }
-    }
-
     async function handleCreateFlashcard(payload) {
         try {
             const data = await createFlashcard(payload.pergunta, payload.resposta)
@@ -116,7 +110,6 @@ export default function FlashCardsPage() {
                                     onCreateClick={() => setIsCreateModalOpen(true)}
                                     onEditClick={() => showFeedback('info', 'Em breve você poderá editar flashcards.')}
                                     onDeleteClick={() => showFeedback('info', 'Em breve você poderá excluir flashcards.')}
-                                    onOpenFlashcard={handleOpenFlashcard}
                                 />
                             )}
                         </div>

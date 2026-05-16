@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 const noop = () => {}
 
 export default function FlashcardsPanel({
@@ -6,14 +8,26 @@ export default function FlashcardsPanel({
     onCreateClick = noop,
     onEditClick,
     onDeleteClick,
-    onOpenFlashcard,
     loadingDeleteFlashcardId = null,
 }) {
-    // Acessibilidade: abre a flashcard via teclado apenas se o handler existir
+    const [flippedFlashcards, setFlippedFlashcards] = useState(new Set())
+
+    function toggleFlashcardFlip(flashcard) {
+        setFlippedFlashcards((previous) => {
+            const next = new Set(previous)
+            if (next.has(flashcard.id)) {
+                next.delete(flashcard.id)
+            } else {
+                next.add(flashcard.id)
+            }
+            return next
+        })
+    }
+
     function handleCardKeyDown(event, flashcard) {
-        if ((event.key === 'Enter' || event.key === ' ') && onOpenFlashcard) {
+        if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault()
-            onOpenFlashcard(flashcard)
+            toggleFlashcardFlip(flashcard)
         }
     }
 
@@ -47,30 +61,56 @@ export default function FlashcardsPanel({
                     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                         {flashcards.map((flashcard) => {
                             const isDeleting = loadingDeleteFlashcardId === flashcard.id
+                            const isFlipped = flippedFlashcards.has(flashcard.id)
 
                             return (
                                 <article
                                     key={flashcard.id}
-                                    // BUG FIX: role e handlers de interação só aplicados se onOpenFlashcard existir
-                                    role={onOpenFlashcard ? 'button' : undefined}
-                                    tabIndex={onOpenFlashcard ? 0 : undefined}
-                                    onClick={onOpenFlashcard ? () => onOpenFlashcard(flashcard) : undefined}
-                                    onKeyDown={onOpenFlashcard ? (e) => handleCardKeyDown(e, flashcard) : undefined}
-                                    className={`rounded-2xl border border-[#E8E8DF] bg-[#FAFAF7] p-5 transition hover:-translate-y-[1px] hover:border-[#D4D4CB] ${
-                                        onOpenFlashcard ? 'cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]' : ''
-                                    }`}
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={() => toggleFlashcardFlip(flashcard)}
+                                    onKeyDown={(e) => handleCardKeyDown(e, flashcard)}
+                                    style={{ perspective: 1000 }}
+                                    className="rounded-2xl border border-[#E8E8DF] bg-transparent p-5 transition hover:-translate-y-[1px] hover:border-[#D4D4CB] cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
                                 >
-                                    <div className="flex items-center gap-3">
+                                    <div
+                                        className="relative h-full min-h-[160px]"
+                                        style={{ transformStyle: 'preserve-3d', transition: 'transform 0.5s ease' , transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'}}
+                                    >
                                         <div
-                                            className="h-3 w-3 rounded-full border border-black/10"
-                                            style={{ backgroundColor: flashcard.color_hex || '#F8FF97' }}
-                                        />
-                                        <h3 className="text-lg font-medium text-[#1A1A1A]">{flashcard.pergunta}</h3>
-                                    </div>
+                                            className="absolute inset-0 rounded-2xl border border-[#E8E8DF] bg-[#FAFAF7] p-5"
+                                            style={{ backfaceVisibility: 'hidden' }}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div
+                                                    className="h-3 w-3 rounded-full border border-black/10"
+                                                    style={{ backgroundColor: flashcard.color_hex || '#F8FF97' }}
+                                                />
+                                                <h3 className="text-lg font-medium text-[#1A1A1A]">Pergunta</h3>
+                                            </div>
 
-                                    <p className="mt-3 min-h-[48px] text-sm leading-6 text-[#5A5A52]">
-                                        {flashcard.resposta || 'Sem resposta cadastrada.'}
-                                    </p>
+                                            <p className="mt-3 min-h-[48px] text-sm leading-6 text-[#5A5A52]">
+                                                {flashcard.pergunta || 'Sem pergunta cadastrada.'}
+                                            </p>
+                                        </div>
+
+                                        <div
+                                            className="absolute inset-0 rounded-2xl border border-[#E8E8DF] bg-[#FAFAF7] p-5"
+                                            style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div
+                                                    className="h-3 w-3 rounded-full border border-black/10"
+                                                    style={{ backgroundColor: flashcard.color_hex || '#F8FF97' }}
+                                                />
+                                                <h3 className="text-lg font-medium text-[#1A1A1A]">Resposta</h3>
+                                            </div>
+
+                                            <p className="mt-3 min-h-[48px] text-sm leading-6 text-[#5A5A52]">
+                                                {flashcard.resposta || 'Sem resposta cadastrada.'}
+                                            </p>
+                                        </div>
+                                    </div>
 
                                     {/* BUG FIX: Botões de ação só renderizados se os handlers forem fornecidos */}
                                     {(onEditClick || onDeleteClick) && (
