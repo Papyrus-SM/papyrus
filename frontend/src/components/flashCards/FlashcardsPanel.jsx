@@ -86,13 +86,13 @@ export default function FlashcardsPanel({
                                     onClick={() => toggleFlashcardFlip(flashcard.id)}
                                     onKeyDown={(e) => handleCardKeyDown(e, flashcard.id)}
                                     style={{ perspective: 1000 }}
-                                    className="rounded-2xl border border-[#E8E8DF] bg-transparent p-5 transition hover:-translate-y-[1px] hover:border-[#D4D4CB] cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
+                                    className="rounded-2xl border border-[#E8E8DF] bg-transparent p-5 transition hover:-translate-y-px hover:border-[#D4D4CB] cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
                                 >
                                     {/* O container abaixo recebe a transformação 3D que cria
                                         o efeito de virar o cartão. Alteramos `transform`
                                         entre `rotateY(0deg)` (frente) e `rotateY(180deg)` (verso). */}
                                     <div
-                                        className="relative h-full min-h-[160px]"
+                                        className="relative h-full min-h-40"
                                         style={{ ...CARD_FLIP_STYLE, transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
                                     >
                                         <div
@@ -107,7 +107,7 @@ export default function FlashcardsPanel({
                                                 <h3 className="text-lg font-medium text-[#1A1A1A]">Pergunta</h3>
                                             </div>
 
-                                            <p className="mt-3 min-h-[48px] text-sm leading-6 text-[#5A5A52]">
+                                            <p className="mt-3 min-h-12 text-sm leading-6 text-[#5A5A52]">
                                                 {flashcard.pergunta || 'Sem pergunta cadastrada.'}
                                             </p>
 
@@ -155,7 +155,7 @@ export default function FlashcardsPanel({
                                                 <h3 className="text-lg font-medium text-[#1A1A1A]">Resposta</h3>
                                             </div>
 
-                                            <p className="mt-3 min-h-[48px] text-sm leading-6 text-[#5A5A52]">
+                                            <p className="mt-3 min-h-12 text-sm leading-6 text-[#5A5A52]">
                                                 {flashcard.resposta || 'Sem resposta cadastrada.'}
                                             </p>
 

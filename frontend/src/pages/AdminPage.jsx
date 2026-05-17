@@ -1,20 +1,54 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import DashboardHeader from '@/components/dashboard/DashboardHeader'
 import AdminSidebar from '@/components/admin/AdminSidebar'
 import AdminUserModal from '@/components/admin/AdminUserModal'
-import { listAdminUsers, editAdminUser, deleteAdminUser } from '@/services/api/api_usuario.js'
+import AdminMetricsSection from '@/components/admin/AdminMetricsSection'
+import AdminChartsSection from '@/components/admin/AdminChartsSection'
+import AdminUsersSection from '@/components/admin/AdminUsersSection'
+import {
+    listAdminUsers,
+    editAdminUser,
+    deleteAdminUser,
+    getAdminDashboardMetrics,
+} from '@/services/api/api_admin.js'
+
+const sectionInfo = {
+    metricas: {
+        eyebrow: 'Administração',
+        title: 'Métricas administrativas',
+    },
+    graficos: {
+        eyebrow: 'Administração',
+        title: 'Gráficos administrativos',
+    },
+    usuarios: {
+        eyebrow: 'Administração',
+        title: 'Gerenciamento de usuários',
+    },
+}
 
 export default function AdminPage() {
     const [user, setUser] = useState(null)
     const [usuarios, setUsuarios] = useState([])
+    const [analytics, setAnalytics] = useState(null)
+
+    const [activeSection, setActiveSection] = useState('metricas')
+
     const [loadingUsuarios, setLoadingUsuarios] = useState(true)
+    const [loadingAnalytics, setLoadingAnalytics] = useState(true)
+
     const [selectedUser, setSelectedUser] = useState(null)
     const [showModal, setShowModal] = useState(false)
+
     const [loadingForm, setLoadingForm] = useState(false)
     const [loadingDelete, setLoadingDelete] = useState(false)
 
     const navigate = useNavigate()
+
+    const currentSection = useMemo(() => {
+        return sectionInfo[activeSection] || sectionInfo.metricas
+    }, [activeSection])
 
     const loadUsuarios = useCallback(async () => {
         try {
@@ -33,6 +67,26 @@ export default function AdminPage() {
             setUsuarios([])
         } finally {
             setLoadingUsuarios(false)
+        }
+    }, [])
+
+    const loadAnalytics = useCallback(async () => {
+        try {
+            setLoadingAnalytics(true)
+
+            const data = await getAdminDashboardMetrics()
+
+            if (data.status === 'ok') {
+                setAnalytics(data.data || null)
+            } else {
+                console.error(data.mensagem || 'Não foi possível carregar as métricas.')
+                setAnalytics(null)
+            }
+        } catch (error) {
+            console.error('Erro ao carregar métricas:', error)
+            setAnalytics(null)
+        } finally {
+            setLoadingAnalytics(false)
         }
     }, [])
 
@@ -61,8 +115,10 @@ export default function AdminPage() {
 
     useEffect(() => {
         if (!user) return
+
         loadUsuarios()
-    }, [user, loadUsuarios])
+        loadAnalytics()
+    }, [user, loadUsuarios, loadAnalytics])
 
     function handleOpenUser(usuario) {
         setSelectedUser(usuario)
@@ -72,6 +128,13 @@ export default function AdminPage() {
     function handleCloseModal() {
         setShowModal(false)
         setSelectedUser(null)
+    }
+
+    async function refreshAdminData() {
+        await Promise.all([
+            loadUsuarios(),
+            loadAnalytics(),
+        ])
     }
 
     async function handleEditUser(payload) {
@@ -106,6 +169,7 @@ export default function AdminPage() {
                     }
                 }
 
+                await loadAnalytics()
                 handleCloseModal()
             } else {
                 alert(data.mensagem || 'Não foi possível editar o usuário.')
@@ -126,6 +190,7 @@ export default function AdminPage() {
 
             if (data.status === 'ok') {
                 setUsuarios((prev) => prev.filter((item) => item.id !== payload.id))
+                await loadAnalytics()
                 handleCloseModal()
             } else {
                 alert(data.mensagem || 'Não foi possível excluir o usuário.')
@@ -138,92 +203,52 @@ export default function AdminPage() {
         }
     }
 
+    function renderActiveSection() {
+        if (activeSection === 'graficos') {
+            return (
+                <AdminChartsSection
+                    data={analytics}
+                    loading={loadingAnalytics}
+                />
+            )
+        }
+
+        if (activeSection === 'usuarios') {
+            return (
+                <AdminUsersSection
+                    usuarios={usuarios}
+                    loading={loadingUsuarios}
+                    onOpenUser={handleOpenUser}
+                />
+            )
+        }
+
+        return (
+            <AdminMetricsSection
+                data={analytics}
+                loading={loadingAnalytics}
+            />
+        )
+    }
+
     return (
         <main className="min-h-screen bg-[#FAFAF7] text-[#1A1A1A]">
             <div className="flex">
-                <AdminSidebar user={user} setUser={setUser} />
+                <AdminSidebar
+                    user={user}
+                    setUser={setUser}
+                    activeSection={activeSection}
+                    onChangeSection={setActiveSection}
+                />
 
                 <div className="min-h-screen flex-1">
                     <DashboardHeader
-                        eyebrow="Administração"
-                        title="Gerenciamento de usuários"
+                        eyebrow={currentSection.eyebrow}
+                        title={currentSection.title}
                     />
 
                     <div className="space-y-8 px-8 py-8">
-                        <section className="rounded-3xl border border-[#E8E8DF] bg-white p-8 shadow-sm">
-                            <p className="text-[11px] uppercase tracking-[0.14em] text-[#8A8A80]">
-                                Usuários
-                            </p>
-
-                            <h2 className="mt-4 font-serif-display text-[clamp(30px,4vw,44px)] leading-[1.05] tracking-[-0.03em] text-[#1A1A1A]">
-                                Contas cadastradas
-                            </h2>
-
-                            <p className="mt-4 max-w-2xl text-[16px] leading-8 text-[#5A5A52]">
-                                Visualize os usuários existentes, edite informações essenciais
-                                e mantenha o controle administrativo da plataforma.
-                            </p>
-
-                            <div className="mt-8">
-                                {loadingUsuarios && (
-                                    <p className="text-sm text-[#8A8A80]">
-                                        Carregando usuários...
-                                    </p>
-                                )}
-
-                                {!loadingUsuarios && usuarios.length === 0 && (
-                                    <div className="rounded-2xl border border-dashed border-[#D9D9D0] bg-[#FAFAF7] px-6 py-8">
-                                        <p className="text-sm leading-7 text-[#5A5A52]">
-                                            Nenhum usuário encontrado.
-                                        </p>
-                                    </div>
-                                )}
-
-                                {!loadingUsuarios && usuarios.length > 0 && (
-                                    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                                        {usuarios.map((usuario) => (
-                                            <article
-                                                key={usuario.id}
-                                                role="button"
-                                                tabIndex={0}
-                                                onClick={() => handleOpenUser(usuario)}
-                                                onKeyDown={(event) => {
-                                                    if (event.key === 'Enter' || event.key === ' ') {
-                                                        event.preventDefault()
-                                                        handleOpenUser(usuario)
-                                                    }
-                                                }}
-                                                className="cursor-pointer rounded-2xl border border-[#E8E8DF] bg-[#FAFAF7] p-5 transition hover:-translate-y-[1px] hover:border-[#D4D4CB] focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
-                                            >
-                                                <div className="flex items-center justify-between gap-3">
-                                                    <h3 className="text-lg font-medium text-[#1A1A1A]">
-                                                        {usuario.nome}
-                                                    </h3>
-
-                                                    <span
-                                                        className={`rounded-full px-3 py-1 text-[11px] uppercase tracking-[0.12em] ${
-                                                            usuario.papel === 'admin'
-                                                                ? 'bg-[#1A1A1A] text-[#FAFAF7]'
-                                                                : 'bg-[#ECECE4] text-[#4E4E47]'
-                                                        }`}
-                                                    >
-                                                        {usuario.papel}
-                                                    </span>
-                                                </div>
-
-                                                <p className="mt-3 break-all text-sm leading-6 text-[#5A5A52]">
-                                                    {usuario.email}
-                                                </p>
-
-                                                <p className="mt-4 text-xs uppercase tracking-[0.12em] text-[#8A8A80]">
-                                                    Clique para visualizar e editar
-                                                </p>
-                                            </article>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        </section>
+                        {renderActiveSection()}
                     </div>
                 </div>
             </div>
