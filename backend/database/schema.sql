@@ -94,7 +94,20 @@ CREATE TABLE sticky_notes (
                               cor              VARCHAR(20) DEFAULT '#ffff88', -- A ideia é que a cor será definida pelo usuário
                               pos_x            INT DEFAULT 0,
                               pos_y            INT DEFAULT 0,
+                              FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 
+-- ------------------------------------------------------------
+-- Tabela 6: flashcards
+-- Guarda os flashcards criados pelo usuário.
+-- ------------------------------------------------------------
+CREATE TABLE flashcards (
+                              id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                              user_id          INT UNSIGNED NOT NULL,
+                              pergunta         TEXT NOT NULL,
+                              resposta         TEXT NOT NULL,
+                              color_hex        CHAR(7) NOT NULL DEFAULT '#F8FF97',
+                              criado_em        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                               FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 

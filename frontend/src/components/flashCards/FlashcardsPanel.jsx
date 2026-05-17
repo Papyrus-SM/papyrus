@@ -6,6 +6,15 @@ const CARD_FLIP_STYLE = {
     transition: 'transform 0.5s ease',
 }
 
+// Explicação simples da animação de virar (para leigos):
+// Cada flashcard é um cartão com duas faces (frente = pergunta, verso = resposta).
+// Para dar o efeito de virar, usamos transformação 3D: rotacionamos no eixo Y.
+// - `preserve-3d` mantém as duas faces no mesmo espaço 3D.
+// - `transition` anima a mudança de `transform` em 0.5s para parecer suave.
+// Quando `transform: 'rotateY(180deg)'` a face de trás fica visível.
+// Para acessar/alternar o estado do cartão usamos um `Set` em React, que guarda
+// os IDs dos flashcards virados.
+
 export default function FlashcardsPanel({
     flashcards,
     loading,
@@ -79,6 +88,9 @@ export default function FlashcardsPanel({
                                     style={{ perspective: 1000 }}
                                     className="rounded-2xl border border-[#E8E8DF] bg-transparent p-5 transition hover:-translate-y-[1px] hover:border-[#D4D4CB] cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
                                 >
+                                    {/* O container abaixo recebe a transformação 3D que cria
+                                        o efeito de virar o cartão. Alteramos `transform`
+                                        entre `rotateY(0deg)` (frente) e `rotateY(180deg)` (verso). */}
                                     <div
                                         className="relative h-full min-h-[160px]"
                                         style={{ ...CARD_FLIP_STYLE, transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}

@@ -54,8 +54,17 @@ export default function EditFlashcardModal({ isOpen, onClose, onSubmit, loading 
         event.preventDefault()
 
         const payload = {
+            flashcard_id: flashcard?.id,
             pergunta: formData.pergunta.trim(),
             resposta: formData.resposta.trim(),
+        }
+
+        // Enviamos `flashcard_id` para que o backend saiba qual registro atualizar.
+        // Isso evita o erro de "ID inválido" quando o frontend esquece de enviar o id.
+
+        if (!payload.flashcard_id) {
+            setError('ID do flashcard inválido.')
+            return
         }
 
         if (!payload.pergunta) {

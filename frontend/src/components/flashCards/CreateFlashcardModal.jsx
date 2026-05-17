@@ -5,6 +5,10 @@ const initialForm = {
     resposta: '',
 }
 
+// Modal simples para criação de flashcards.
+// Segue o padrão dos modais da aplicação: controla foco, bloqueia
+// o scroll do body enquanto aberto e fecha com ESC ou click fora.
+
 export default function CreateFlashcardModal({ isOpen, onClose, onSubmit, loading = false }) {
     const [formData, setFormData] = useState(initialForm)
     const [error, setError] = useState('')
