@@ -38,7 +38,6 @@ CREATE TABLE IF NOT EXISTS materias (
     nome VARCHAR(100) NOT NULL,
     descricao TEXT NULL,
     color_hex CHAR(7) NOT NULL DEFAULT '#F8FF97',
-    horas_semanais TINYINT UNSIGNED DEFAULT 0,
 
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

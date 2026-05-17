@@ -72,7 +72,7 @@ export default function CreateFlashcardModal({ isOpen, onClose, onSubmit, loadin
 
     return (
         <div
-            className="fixed inset-0 z-[110] flex items-center justify-center bg-black/15 px-4 py-8 backdrop-blur-sm"
+            className="fixed inset-0 z-110 flex items-center justify-center bg-black/15 px-4 py-8 backdrop-blur-sm"
             onMouseDown={onClose}
         >
             <div
