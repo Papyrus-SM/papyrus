@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 
 import LandingPage from '@/pages/LandingPage'
 import RegisterPage from '@/pages/RegisterPage'
@@ -21,7 +21,17 @@ import FlashCardsPage from '@/pages/FlashCardsPage.jsx'
 import { PomodoroProvider } from '@/contexts/PomodoroContext.jsx'
 import PomodoroWidget from '@/components/pomodoro/PomodoroWidget.jsx'
 
+import ChatButton from '@/components/chat/ChatButton'
+
 export default function App() {
+    const location = useLocation()
+
+    const publicPaths = ['/', '/login', '/register']
+    const isPublicPath = publicPaths.includes(location.pathname)
+    const isAdminPath = location.pathname.startsWith('/admin')
+
+    const showChat = !isPublicPath && !isAdminPath
+
     return (
         <PomodoroProvider>
             <Routes>
@@ -45,10 +55,14 @@ export default function App() {
                 <Route path="/metodos/pomodoro" element={<PomodoroPage />} />
                 <Route path="/metodos/flashcards" element={<FlashCardsPage />} />
 
+                <Route path="/flashcards" element={<Navigate to="/metodos/flashcards" replace />} />
+
                 <Route path="/admin" element={<AdminPage />} />
             </Routes>
 
             <PomodoroWidget />
+
+            {showChat && <ChatButton />}
         </PomodoroProvider>
     )
 }
