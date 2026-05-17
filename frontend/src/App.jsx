@@ -1,9 +1,10 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 
 import LandingPage from '@/pages/LandingPage'
 import RegisterPage from '@/pages/RegisterPage'
 import LoginPage from '@/pages/LoginPage'
 import DashboardPage from '@/pages/DashboardPage'
+
 import MateriasPage from '@/pages/MateriasPage.jsx'
 import MateriaDetalhePage from '@/pages/MateriaDetalhePage.jsx'
 import StickyNotesPage from '@/pages/StickyNotesPage.jsx'
@@ -15,7 +16,7 @@ import CadernoDetalhePage from '@/pages/CadernoDetalhePage'
 
 import MetodosPage from '@/pages/MetodosPage.jsx'
 import PomodoroPage from '@/pages/PomodoroPage.jsx'
-import FlashcardsPage from '@/pages/FlashcardsPage.jsx'
+import FlashCardsPage from '@/pages/FlashCardsPage.jsx'
 
 import { PomodoroProvider } from '@/contexts/PomodoroContext.jsx'
 import PomodoroWidget from '@/components/pomodoro/PomodoroWidget.jsx'
@@ -42,7 +43,7 @@ export default function App() {
 
                 <Route path="/metodos" element={<MetodosPage />} />
                 <Route path="/metodos/pomodoro" element={<PomodoroPage />} />
-                <Route path="/metodos/flashcards" element={<FlashcardsPage />} />
+                <Route path="/metodos/flashcards" element={<FlashCardsPage />} />
 
                 <Route path="/admin" element={<AdminPage />} />
             </Routes>
