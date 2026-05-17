@@ -47,7 +47,7 @@ export default function AdminUsersSection({
                                         onOpenUser(usuario)
                                     }
                                 }}
-                                className="cursor-pointer rounded-2xl border border-[#E8E8DF] bg-[#FAFAF7] p-5 transition hover:-translate-y-[1px] hover:border-[#D4D4CB] focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
+                                className="cursor-pointer rounded-2xl border border-[#E8E8DF] bg-[#FAFAF7] p-5 transition hover:-translate-y-px hover:border-[#D4D4CB] focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
                             >
                                 <div className="flex items-center justify-between gap-3">
                                     <h3 className="text-lg font-medium text-[#1A1A1A]">

@@ -51,7 +51,7 @@ export default function HeroSection() {
                         </div>
 
                         <div data-animate className="animate-on-scroll">
-                            <p className="max-w-[400px] text-[17px] font-light leading-[1.75] text-[#5A5A52]">
+                            <p className="max-w-100 text-[17px] font-light leading-[1.75] text-[#5A5A52]">
                                 Um sistema de organização para estudantes que querem controle
                                 real sobre sua rotina com cadernos, flashcards, Pomodoro e
                                 grade semanal em um só lugar.

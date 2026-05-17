@@ -227,7 +227,7 @@ export default function CadernoDetalhePage() {
             <div className="flex min-h-screen bg-[#FAFAF7]">
 
                 {/* Sidebar lateral */}
-                <aside className="flex w-[280px] flex-col border-r border-[#E8E8DF] bg-[#F7F7F2]">
+                <aside className="flex w-70 flex-col border-r border-[#E8E8DF] bg-[#F7F7F2]">
 
                     {/* Cabeçalho da sidebar */}
                     <div className="border-b border-[#E8E8DF] px-5 py-5">
