@@ -2,7 +2,7 @@
 // MUDANÇAS: Nenhuma mudança funcional — componente já estava correto e limpo.
 // Mantido exatamente como estava.
 
-export default function DashboardHeader({ eyebrow = 'Dashboard', title = 'Visão geral' }) {
+export default function DashboardHeader({ eyebrow = 'Dashboard', title = 'Visão geral', actions }) {
     return (
         <header className="flex items-center justify-between border-b border-[#E8E8DF] px-8 py-6">
             <div>
@@ -13,6 +13,7 @@ export default function DashboardHeader({ eyebrow = 'Dashboard', title = 'Visão
                     {title}
                 </h1>
             </div>
+            {actions && <div>{actions}</div>}
         </header>
     )
 }

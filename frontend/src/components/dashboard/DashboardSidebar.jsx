@@ -12,8 +12,8 @@ const items = [
     { label: 'Matérias', to: '/materias', disabled: false },
     { label: 'Post-its', to: '/sticky-notes', disabled: false },
     { label: 'Tarefas', to: '/tarefas', disabled: false },
+    { label: 'Métodos', to: '/metodos', disabled: false },
     { label: 'Calendário', to: null, disabled: true },
-    { label: 'Métodos', to: null, disabled: true },
 ]
 
 export default function DashboardSidebar({ user, setUser }) {
@@ -46,7 +46,7 @@ export default function DashboardSidebar({ user, setUser }) {
 
             <nav className="space-y-2">
                 {items.map((item) => {
-                    const isActive = item.to && location.pathname === item.to
+                    const isActive = item.to && (location.pathname === item.to || location.pathname.startsWith(item.to + '/'))
 
                     if (item.disabled) {
                         return (
@@ -76,7 +76,7 @@ export default function DashboardSidebar({ user, setUser }) {
             <div className="mt-auto space-y-4">
                 <div className="rounded-2xl border border-[#E8E8DF] bg-white px-4 py-4">
                     <p className="text-xs uppercase tracking-[0.12em] text-[#8A8A80]">Em breve</p>
-                    <p className="mt-2 text-sm leading-6 text-[#5A5A52]">Flashcards, Pomodoro e cadernos inteligentes.</p>
+                    <p className="mt-2 text-sm leading-6 text-[#5A5A52]">Calendário e cadernos inteligentes.</p>
                 </div>
 
                 <ProfileMenu user={user} setUser={setUser} onLogout={handleLogout} />
