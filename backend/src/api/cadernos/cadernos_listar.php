@@ -1,21 +1,17 @@
 <?php
 
-// Carrega configurações da API e conexão com o banco.
 include_once(__DIR__ . '/../../config/headers.php');
 include_once(__DIR__ . '/../../config/input.php');
 include_once(__DIR__ . '/../../config/conexao.php');
 
-// Inicia a sessão para identificar o usuário autenticado.
 session_start();
 
-// Estrutura padrão de resposta da API.
 $retorno = [
     "status" => "",
     "mensagem" => "",
     "data" => []
 ];
 
-// Apenas usuários autenticados podem listar suas matérias.
 if (!isset($_SESSION["usuario"])) {
     $retorno["status"] = "nok";
     $retorno["mensagem"] = "Usuário não autenticado.";
@@ -24,27 +20,27 @@ if (!isset($_SESSION["usuario"])) {
     exit;
 }
 
-// Abre conexão com o banco.
 $conexao = getConexao();
 
-// Busca todas as matérias do usuário autenticado.
 $stmt = $conexao->prepare("
-    SELECT id, nome, descricao, color_hex
-    FROM materias
-    WHERE user_id = :user_id
-    ORDER BY id ASC
+    SELECT c.id, c.materia_id, c.titulo, c.descricao, c.data_criacao, m.nome AS materia_nome, m.color_hex AS materia_cor,
+    (SELECT COUNT(*) FROM paginas WHERE caderno_id = c.id) AS total_paginas
+    FROM cadernos c
+    INNER JOIN materias m ON m.id = c.materia_id
+    WHERE m.user_id = :user_id
+    ORDER BY c.data_criacao DESC
 ");
 
 $stmt->execute([
     ":user_id" => $_SESSION["usuario"]["id"]
 ]);
 
-$materias = $stmt->fetchAll();
+$cadernos = $stmt->fetchAll();
 
 $retorno["status"] = "ok";
-$retorno["mensagem"] = "Matérias listadas com sucesso.";
+$retorno["mensagem"] = "Cadernos listados com sucesso.";
 $retorno["data"] = [
-    "materias" => $materias
+    "cadernos" => $cadernos
 ];
 
 echo json_encode($retorno);

@@ -31,7 +31,6 @@ $id = $body["id"] ?? null;
 $nome = trim($body["nome"] ?? "");
 $descricao = trim($body["descricao"] ?? "");
 $color_hex = trim($body["color_hex"] ?? "#F8FF97");
-$horas_semanais = $body["horas_semanais"] ?? 0;
 
 // Validação do ID.
 if (!filter_var($id, FILTER_VALIDATE_INT)) {
@@ -70,24 +69,6 @@ if (!preg_match('/^#[0-9A-Fa-f]{6}$/', $color_hex)) {
     exit;
 }
 
-// Validação de horas semanais.
-if (!filter_var($horas_semanais, FILTER_VALIDATE_INT) && $horas_semanais !== 0 && $horas_semanais !== "0") {
-    $retorno["status"] = "nok";
-    $retorno["mensagem"] = "Horas semanais inválidas.";
-
-    echo json_encode($retorno);
-    exit;
-}
-
-$horas_semanais = (int) $horas_semanais;
-
-if ($horas_semanais < 0 || $horas_semanais > 255) {
-    $retorno["status"] = "nok";
-    $retorno["mensagem"] = "Horas semanais devem estar entre 0 e 255.";
-
-    echo json_encode($retorno);
-    exit;
-}
 
 // Abre conexão com o banco.
 $conexao = getConexao();
@@ -97,10 +78,9 @@ $stmt = $conexao->prepare("
     UPDATE materias
     SET nome = :nome,
         descricao = :descricao,
-        color_hex = :color_hex,
-        horas_semanais = :horas_semanais
+        color_hex = :color_hex
     WHERE id = :id
-      AND user_id = :user_id
+    AND user_id = :user_id
     LIMIT 1
 ");
 
@@ -108,7 +88,6 @@ $executou = $stmt->execute([
     ":nome" => $nome,
     ":descricao" => $descricao ?: null,
     ":color_hex" => $color_hex,
-    ":horas_semanais" => $horas_semanais,
     ":id" => $id,
     ":user_id" => $_SESSION["usuario"]["id"]
 ]);
@@ -122,7 +101,6 @@ if ($executou && $stmt->rowCount() > 0) {
             "nome" => $nome,
             "descricao" => $descricao ?: null,
             "color_hex" => $color_hex,
-            "horas_semanais" => $horas_semanais
         ]
     ];
 } else {

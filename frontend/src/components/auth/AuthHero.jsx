@@ -14,7 +14,7 @@ export default function AuthHero({ eyebrow, title, description, items = [] }) {
                 {title}
             </h1>
 
-            <p className="mt-6 max-w-[480px] text-[17px] leading-[1.75] text-[#5A5A52]">
+            <p className="mt-6 max-w-120 text-[17px] leading-[1.75] text-[#5A5A52]">
                 {description}
             </p>
 

@@ -46,7 +46,7 @@ $conexao = getConexao();
 $stmt = $conexao->prepare("
     DELETE FROM materias
     WHERE id = :id
-      AND user_id = :user_id
+    AND user_id = :user_id
     LIMIT 1
 ");
 

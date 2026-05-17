@@ -10,14 +10,14 @@ const initialForm = {
 }
 
 export default function AdminUserModal({
-                                           isOpen,
-                                           userData,
-                                           onClose,
-                                           onSubmit,
-                                           onDelete,
-                                           loading = false,
-                                           loadingDelete = false,
-                                       }) {
+    isOpen,
+    userData,
+    onClose,
+    onSubmit,
+    onDelete,
+    loading = false,
+    loadingDelete = false,
+}) {
     const [formData, setFormData] = useState(initialForm)
     const [error, setError] = useState('')
     const firstInputRef = useRef(null)
@@ -105,7 +105,7 @@ export default function AdminUserModal({
 
     return (
         <div
-            className="fixed inset-0 z-[120] flex items-center justify-center bg-black/30 px-4 py-8 backdrop-blur-sm"
+            className="fixed inset-0 z-120 flex items-center justify-center bg-black/30 px-4 py-8 backdrop-blur-sm"
             onMouseDown={onClose}
         >
             <div

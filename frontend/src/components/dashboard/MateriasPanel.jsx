@@ -5,17 +5,17 @@
 // 2. DRY: Extraída lógica de teclas de acessibilidade inline para manter consistência.
 // 3. Handlers de clique nos botões agora só são renderizados se o handler existir.
 
-const noop = () => {}
+const noop = () => { }
 
 export default function MateriasPanel({
-                                          materias,
-                                          loading,
-                                          onCreateClick = noop,
-                                          onEditClick,
-                                          onDeleteClick,
-                                          onOpenMateria,
-                                          loadingDeleteMateriaId = null,
-                                      }) {
+    materias,
+    loading,
+    onCreateClick = noop,
+    onEditClick,
+    onDeleteClick,
+    onOpenMateria,
+    loadingDeleteMateriaId = null,
+}) {
     // Acessibilidade: abre a matéria via teclado apenas se o handler existir
     function handleCardKeyDown(event, materia) {
         if ((event.key === 'Enter' || event.key === ' ') && onOpenMateria) {
@@ -63,9 +63,8 @@ export default function MateriasPanel({
                                     tabIndex={onOpenMateria ? 0 : undefined}
                                     onClick={onOpenMateria ? () => onOpenMateria(materia) : undefined}
                                     onKeyDown={onOpenMateria ? (e) => handleCardKeyDown(e, materia) : undefined}
-                                    className={`rounded-2xl border border-[#E8E8DF] bg-[#FAFAF7] p-5 transition hover:-translate-y-[1px] hover:border-[#D4D4CB] ${
-                                        onOpenMateria ? 'cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]' : ''
-                                    }`}
+                                    className={`rounded-2xl border border-[#E8E8DF] bg-[#FAFAF7] p-5 transition hover:-translate-y-px hover:border-[#D4D4CB] ${onOpenMateria ? 'cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]' : ''
+                                        }`}
                                 >
                                     <div className="flex items-center gap-3">
                                         <div
@@ -74,8 +73,8 @@ export default function MateriasPanel({
                                         />
                                         <h3 className="text-lg font-medium text-[#1A1A1A]">{materia.nome}</h3>
                                     </div>
-
-                                    <p className="mt-3 min-h-[48px] text-sm leading-6 text-[#5A5A52]">
+                                    
+                                    <p className="text-sm leading-2 text-[#5A5A52]">
                                         {materia.descricao || 'Sem descrição cadastrada.'}
                                     </p>
 

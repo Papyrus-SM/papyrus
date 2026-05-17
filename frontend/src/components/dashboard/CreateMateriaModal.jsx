@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from 'react'
 
 const initialForm = {
     nome: '',
+
     descricao: '',
     color_hex: '#F8FF97',
 }
@@ -60,7 +61,7 @@ export default function CreateMateriaModal({ isOpen, onClose, onSubmit, loading 
         const payload = {
             nome: formData.nome.trim(),
             descricao: formData.descricao.trim(),
-            color_hex: formData.color_hex,
+            color_hex: formData.color_hex
         }
 
         if (!payload.nome) {
@@ -75,7 +76,7 @@ export default function CreateMateriaModal({ isOpen, onClose, onSubmit, loading 
 
     return (
         <div
-            className="fixed inset-0 z-[110] flex items-center justify-center bg-black/30 px-4 py-8 backdrop-blur-sm"
+            className="fixed inset-0 z-119 flex items-center justify-center bg-black/30 px-4 py-8 backdrop-blur-sm"
             onMouseDown={onClose}
         >
             <div

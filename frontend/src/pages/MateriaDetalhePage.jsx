@@ -195,7 +195,7 @@ export default function MateriaDetalhePage() {
                                             return (
                                                 <article
                                                     key={tarefa.id}
-                                                    className="rounded-2xl border border-[#E8E8DF] bg-[#FAFAF7] p-5 transition hover:-translate-y-[1px] hover:border-[#D4D4CB]"
+                                                    className="rounded-2xl border border-[#E8E8DF] bg-[#FAFAF7] p-5 transition hover:-translate-y-px hover:border-[#D4D4CB]"
                                                 >
                                                     <div className="flex items-start justify-between gap-2">
                                                         <div className="flex items-center gap-3 min-w-0">
@@ -215,7 +215,7 @@ export default function MateriaDetalhePage() {
                                                         )}
                                                     </div>
 
-                                                    <p className="mt-3 min-h-[36px] text-sm leading-6 text-[#5A5A52]">
+                                                    <p className="mt-3 min-h-9 text-sm leading-6 text-[#5A5A52]">
                                                         {tarefa.descricao || 'Sem descrição cadastrada.'}
                                                     </p>
 

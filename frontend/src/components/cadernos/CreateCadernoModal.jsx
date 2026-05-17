@@ -1,45 +1,30 @@
-// MUDANÇAS:
-// 1. Mesma correção do CreateMateriaModal: onClose via ref para estabilizar o listener.
-// 2. Ordem das condições no useEffect reorganizada para early return limpo.
-// 3. setTimeout para focus mantido (necessário para garantir render completo após abertura).
-// 4. Dependências do useEffect simplificadas: [isOpen, materia] — onClose removido (via ref).
-
 import { useEffect, useRef, useState } from 'react'
 
 const initialForm = {
-    nome: '',
+    materia_id: '',
+    titulo: '',
     descricao: '',
-    color_hex: '#F8FF97',
 }
 
-export default function EditMateriaModal({ isOpen, materia, onClose, onSubmit, loading = false }) {
+export default function CreateCadernoModal({ isOpen, onClose, onSubmit, loading, materias }) {
     const [formData, setFormData] = useState(initialForm)
     const [error, setError] = useState('')
     const firstInputRef = useRef(null)
 
-    // Ref estável para onClose: evita re-registro do listener a cada re-render do pai
     const onCloseRef = useRef(onClose)
     useEffect(() => { onCloseRef.current = onClose }, [onClose])
 
     useEffect(() => {
-        if (!isOpen || !materia) {
+        if (!isOpen) {
             setFormData(initialForm)
             setError('')
             return
         }
 
-        // Popula o form com os dados atuais da matéria
-        setFormData({
-            nome: materia.nome || '',
-            descricao: materia.descricao || '',
-            color_hex: materia.color_hex || '#F8FF97',
-        })
+        firstInputRef.current?.focus()
 
         const previousOverflow = document.body.style.overflow
         document.body.style.overflow = 'hidden'
-
-        // setTimeout garante que o DOM terminou de renderizar antes do focus
-        const timer = setTimeout(() => firstInputRef.current?.focus(), 0)
 
         function handleKeyDown(event) {
             if (event.key === 'Escape') onCloseRef.current()
@@ -48,11 +33,10 @@ export default function EditMateriaModal({ isOpen, materia, onClose, onSubmit, l
         window.addEventListener('keydown', handleKeyDown)
 
         return () => {
-            clearTimeout(timer)
             document.body.style.overflow = previousOverflow
             window.removeEventListener('keydown', handleKeyDown)
         }
-    }, [isOpen, materia]) // MELHORIA: onClose removido das dependências (agora via ref)
+    }, [isOpen])
 
     function handleChange(event) {
         const { name, value } = event.target
@@ -63,88 +47,91 @@ export default function EditMateriaModal({ isOpen, materia, onClose, onSubmit, l
     async function handleSubmit(event) {
         event.preventDefault()
 
-        // BUG FIX: validações antes de montar payload
-        if (!materia?.id) {
-            setError('Matéria inválida para edição.')
+        const payload = {
+            materia_id: formData.materia_id,
+            titulo: formData.titulo.trim(),
+            descricao: formData.descricao.trim(),
+        }
+
+        if (!payload.materia_id) {
+            setError('Selecione uma matéria.')
             return
         }
 
-        const payload = {
-            id: materia.id,
-            nome: formData.nome.trim(),
-            descricao: formData.descricao.trim(),
-            color_hex: formData.color_hex,
-        }
-
-        if (!payload.nome) {
-            setError('Informe um nome para a matéria.')
+        if (!payload.titulo) {
+            setError('Informe um título para o caderno.')
             return
         }
 
         await onSubmit(payload)
     }
 
-    if (!isOpen || !materia) return null
+    if (!isOpen) return null
 
     return (
         <div
-            className="fixed inset-0 z-120 flex items-center justify-center bg-black/30 px-4 py-8 backdrop-blur-sm"
+            className="fixed inset-0 z-[110] flex items-center justify-center bg-black/30 px-4 py-8 backdrop-blur-sm"
             onMouseDown={onClose}
         >
             <div
                 role="dialog"
                 aria-modal="true"
-                aria-labelledby="edit-materia-title"
+                aria-labelledby="create-caderno-title"
                 className="w-full max-w-xl rounded-3xl border border-[#E8E8DF] bg-white p-8 shadow-xl"
                 onMouseDown={(e) => e.stopPropagation()}
             >
                 <div className="flex items-start justify-between gap-4">
                     <div>
-                        <p className="text-[11px] uppercase tracking-[0.14em] text-[#8A8A80]">Matérias</p>
-                        <h2 id="edit-materia-title" className="mt-3 font-serif-display text-4xl tracking-[-0.03em] text-[#1A1A1A]">Editar matéria</h2>
-                        <p className="mt-3 text-sm leading-7 text-[#5A5A52]">Atualize os dados da matéria selecionada.</p>
+                        <p className="text-[11px] uppercase tracking-[0.14em] text-[#8A8A80]">Cadernos</p>
+                        <h2 id="create-caderno-title" className="mt-3 font-serif-display text-4xl tracking-[-0.03em] text-[#1A1A1A]">Novo caderno</h2>
+                        <p className="mt-3 text-sm leading-7 text-[#5A5A52]">Crie um caderno vinculado a uma matéria.</p>
                     </div>
                     <button type="button" onClick={onClose} className="text-sm text-[#8A8A80] transition hover:text-[#1A1A1A]">Fechar</button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="mt-8 space-y-4">
                     <div>
-                        <label htmlFor="edit_nome" className="mb-2 block text-sm font-medium text-[#3F3F39]">Nome</label>
-                        <input
+                        <label htmlFor="materia_id" className="mb-2 block text-sm font-medium text-[#3F3F39]">Matéria</label>
+                        <select
                             ref={firstInputRef}
-                            id="edit_nome"
-                            name="nome"
-                            type="text"
-                            value={formData.nome}
+                            id="materia_id"
+                            name="materia_id"
+                            value={formData.materia_id}
                             onChange={handleChange}
-                            placeholder="Ex.: Engenharia de Software"
+                            className="w-full rounded-xl border border-[#D9D9D0] bg-[#FAFAF7] px-4 py-3 text-sm text-[#1A1A1A] outline-none transition focus:border-[#1A1A1A]"
+                            required
+                        >
+                            <option value="">Selecione uma matéria</option>
+                            {materias.map((m) => (
+                                <option key={m.id} value={m.id}>{m.nome}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label htmlFor="titulo" className="mb-2 block text-sm font-medium text-[#3F3F39]">Título</label>
+                        <input
+                            id="titulo"
+                            name="titulo"
+                            type="text"
+                            value={formData.titulo}
+                            onChange={handleChange}
+                            placeholder="Ex.: Anotações de POO"
                             className="w-full rounded-xl border border-[#D9D9D0] bg-[#FAFAF7] px-4 py-3 text-sm text-[#1A1A1A] outline-none transition focus:border-[#1A1A1A]"
                             required
                         />
                     </div>
 
                     <div>
-                        <label htmlFor="edit_descricao" className="mb-2 block text-sm font-medium text-[#3F3F39]">Descrição</label>
+                        <label htmlFor="descricao" className="mb-2 block text-sm font-medium text-[#3F3F39]">Descrição</label>
                         <textarea
-                            id="edit_descricao"
+                            id="descricao"
                             name="descricao"
                             value={formData.descricao}
                             onChange={handleChange}
                             placeholder="Opcional"
-                            rows={4}
+                            rows={3}
                             className="w-full rounded-xl border border-[#D9D9D0] bg-[#FAFAF7] px-4 py-3 text-sm text-[#1A1A1A] outline-none transition focus:border-[#1A1A1A]"
-                        />
-                    </div>
-
-                    <div>
-                        <label htmlFor="edit_color_hex" className="mb-2 block text-sm font-medium text-[#3F3F39]">Cor</label>
-                        <input
-                            id="edit_color_hex"
-                            name="color_hex"
-                            type="color"
-                            value={formData.color_hex}
-                            onChange={handleChange}
-                            className="h-12 w-full rounded-xl border border-[#D9D9D0] bg-[#FAFAF7] px-2 py-2"
                         />
                     </div>
 
@@ -155,12 +142,11 @@ export default function EditMateriaModal({ isOpen, materia, onClose, onSubmit, l
                             Cancelar
                         </button>
                         <button type="submit" disabled={loading} className="rounded-xl border border-[#1A1A1A] bg-[#1A1A1A] px-4 py-3 text-sm text-[#FAFAF7] transition hover:bg-[#2A2A2A] disabled:opacity-70">
-                            {loading ? 'Salvando...' : 'Salvar alterações'}
+                            {loading ? 'Salvando...' : 'Criar caderno'}
                         </button>
                     </div>
                 </form>
             </div>
         </div>
-        // teste
     )
 }

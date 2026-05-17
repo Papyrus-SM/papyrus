@@ -46,8 +46,8 @@ try {
     $conexao->beginTransaction();
 
     $stmt = $conexao->prepare("
-        INSERT INTO materias (user_id, nome, descricao, color_hex, horas_semanais)
-        VALUES (:user_id, :nome, :descricao, :color_hex, :horas_semanais)
+        INSERT INTO materias (user_id, nome, descricao, color_hex)
+        VALUES (:user_id, :nome, :descricao, :color_hex)
     ");
 
     $materiasCriadas = [];
@@ -56,7 +56,7 @@ try {
         $nome = trim($materia["nome"] ?? "");
         $descricao = trim($materia["descricao"] ?? "");
         $color_hex = trim($materia["color_hex"] ?? "#F8FF97");
-        $horas_semanais = $materia["horas_semanais"] ?? 0;
+        
 
         if (empty($nome)) {
             throw new Exception("Todas as matérias precisam ter um nome.");
@@ -70,30 +70,18 @@ try {
             throw new Exception("Uma das cores informadas é inválida.");
         }
 
-        if (!filter_var($horas_semanais, FILTER_VALIDATE_INT) && $horas_semanais !== 0 && $horas_semanais !== "0") {
-            throw new Exception("Horas semanais inválidas em uma das matérias.");
-        }
-
-        $horas_semanais = (int) $horas_semanais;
-
-        if ($horas_semanais < 0 || $horas_semanais > 255) {
-            throw new Exception("Horas semanais devem estar entre 0 e 255.");
-        }
-
         $stmt->execute([
             ":user_id" => $_SESSION["usuario"]["id"],
             ":nome" => $nome,
             ":descricao" => $descricao ?: null,
-            ":color_hex" => $color_hex,
-            ":horas_semanais" => $horas_semanais
+            ":color_hex" => $color_hex
         ]);
 
         $materiasCriadas[] = [
             "id" => (int) $conexao->lastInsertId(),
             "nome" => $nome,
             "descricao" => $descricao ?: null,
-            "color_hex" => $color_hex,
-            "horas_semanais" => $horas_semanais
+            "color_hex" => $color_hex
         ];
     }
 

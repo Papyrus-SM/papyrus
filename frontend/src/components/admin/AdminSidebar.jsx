@@ -34,7 +34,7 @@ export default function AdminSidebar({ user, setUser }) {
     }
 
     return (
-        <aside className="flex min-h-screen w-[260px] flex-col border-r border-[#E8E8DF] bg-[#F7F7F2] px-5 py-6">
+        <aside className="flex min-h-screen w-65 flex-col border-r border-[#E8E8DF] bg-[#F7F7F2] px-5 py-6">
             <div className="mb-10">
                 <div className="font-serif-display text-2xl tracking-[-0.03em] text-[#1A1A1A]">
                     Papyrus

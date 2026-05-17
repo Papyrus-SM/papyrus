@@ -9,7 +9,7 @@ USE papyrus;
 -- Armazena os dados principais do usuário do sistema.
 -- Também sustenta as funcionalidades de cadastro, login e perfil.
 -- ------------------------------------------------------------
-CREATE TABLE users (
+CREATE TABLE  IF NOT EXISTS users (
                        id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                        nome             VARCHAR(100) NOT NULL,
                        email            VARCHAR(150) NOT NULL UNIQUE,
@@ -24,7 +24,7 @@ CREATE TABLE users (
 -- Controla se o usuário já concluiu o onboarding inicial.
 -- Relação 1:1 com users.
 -- ------------------------------------------------------------
-CREATE TABLE perfil_onboarding (
+CREATE TABLE  IF NOT EXISTS perfil_onboarding (
                                    id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                                    user_id          INT UNSIGNED NOT NULL UNIQUE,
                                    concluido        BOOLEAN DEFAULT FALSE,
@@ -38,13 +38,12 @@ CREATE TABLE perfil_onboarding (
 -- Representa as matérias estudadas pelo usuário.
 -- Esta passa a ser a entidade central do domínio de estudos.
 -- ------------------------------------------------------------
-CREATE TABLE materias (
+CREATE TABLE  IF NOT EXISTS materias (
                           id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                           user_id          INT UNSIGNED NOT NULL,
                           nome             VARCHAR(100) NOT NULL,
                           descricao        TEXT NULL,
                           color_hex        CHAR(7) NOT NULL DEFAULT '#F8FF97',
-                          horas_semanais   TINYINT UNSIGNED DEFAULT 0,
 
                           FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -54,7 +53,7 @@ CREATE TABLE materias (
 -- Cada linha representa um horário recorrente semanal de uma matéria.
 -- Pode ser usada futuramente para calendário/cronograma semanal.
 -- ------------------------------------------------------------
-CREATE TABLE horarios_aula (
+CREATE TABLE  IF NOT EXISTS horarios_aula (
                                id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                                materia_id       INT UNSIGNED NOT NULL,
                                dia_da_semana    ENUM('segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo') NOT NULL,
@@ -70,7 +69,7 @@ CREATE TABLE horarios_aula (
 -- Tarefas vinculadas a uma matéria específica.
 -- Cada matéria pode possuir várias tarefas.
 -- ------------------------------------------------------------
-CREATE TABLE tarefas (
+CREATE TABLE  IF NOT EXISTS tarefas (
                          id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                          materia_id       INT UNSIGNED NOT NULL,
                          titulo           VARCHAR(150) NOT NULL,
@@ -86,7 +85,7 @@ CREATE TABLE tarefas (
 -- ------------------------------------------------------------
 -- Para a funcionalidade do usuário colocar "post-its" na tela.
 -- ------------------------------------------------------------
-CREATE TABLE sticky_notes (
+CREATE TABLE  IF NOT EXISTS sticky_notes (
                               id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                               user_id          INT UNSIGNED NOT NULL,
                               titulo			      TEXT,
@@ -97,6 +96,32 @@ CREATE TABLE sticky_notes (
 
                               FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+-- Tabela: cadernos
+-- Cadernos vinculados a uma matéria específica.
+-- Cada matéria pode possuir vários cadernos.
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS cadernos (
+    id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    materia_id      INT UNSIGNED NULL,
+    titulo          VARCHAR(150) NOT NULL,
+    descricao       TEXT NULL,
+    data_criacao    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (materia_id) REFERENCES materias(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS paginas (
+    id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    caderno_id      INT UNSIGNED NOT NULL,
+    titulo          VARCHAR(150) NOT NULL,
+    conteudo        LONGTEXT NULL,
+    ordem           INT UNSIGNED NOT NULL DEFAULT 1,
+    data_criacao    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (caderno_id) REFERENCES cadernos(id) ON DELETE CASCADE
+);
+
 
 UPDATE users
 SET papel = 'admin'
