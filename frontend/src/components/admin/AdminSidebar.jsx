@@ -1,13 +1,31 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { logoutUser } from '@/services/api/api_usuario.js'
 
 const items = [
-    { label: 'Usuários', to: '/admin' },
+    {
+        id: 'metricas',
+        label: 'Métricas',
+        description: 'Resumo geral',
+    },
+    {
+        id: 'graficos',
+        label: 'Gráficos',
+        description: 'Análises visuais',
+    },
+    {
+        id: 'usuarios',
+        label: 'Usuários',
+        description: 'Gerenciar contas',
+    },
 ]
 
-export default function AdminSidebar({ user, setUser }) {
-    const location = useLocation()
+export default function AdminSidebar({
+    user,
+    setUser,
+    activeSection,
+    onChangeSection,
+}) {
     const navigate = useNavigate()
     const [isLeaving, setIsLeaving] = useState(false)
 
@@ -46,20 +64,31 @@ export default function AdminSidebar({ user, setUser }) {
 
             <nav className="space-y-2">
                 {items.map((item) => {
-                    const isActive = location.pathname === item.to
+                    const isActive = activeSection === item.id
 
                     return (
-                        <Link
-                            key={item.label}
-                            to={item.to}
-                            className={`block rounded-xl px-4 py-3 text-sm transition ${
+                        <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => onChangeSection(item.id)}
+                            className={`w-full rounded-xl px-4 py-3 text-left transition ${
                                 isActive
                                     ? 'bg-[#1A1A1A] text-[#FAFAF7]'
                                     : 'text-[#4E4E47] hover:bg-[#ECECE4] hover:text-[#1A1A1A]'
                             }`}
                         >
-                            {item.label}
-                        </Link>
+                            <span className="block text-sm">
+                                {item.label}
+                            </span>
+
+                            <span
+                                className={`mt-1 block text-xs ${
+                                    isActive ? 'text-[#D8D8CF]' : 'text-[#8A8A80]'
+                                }`}
+                            >
+                                {item.description}
+                            </span>
+                        </button>
                     )
                 })}
             </nav>
@@ -69,12 +98,15 @@ export default function AdminSidebar({ user, setUser }) {
                     <p className="text-xs uppercase tracking-[0.12em] text-[#8A8A80]">
                         Conta ativa
                     </p>
+
                     <p className="mt-2 text-sm font-medium text-[#1A1A1A]">
                         {primeiroNome}
                     </p>
+
                     <p className="mt-1 break-all text-sm leading-6 text-[#5A5A52]">
                         {email}
                     </p>
+
                     <p className="mt-3 inline-flex rounded-full bg-[#1A1A1A] px-3 py-1 text-[11px] uppercase tracking-[0.12em] text-[#FAFAF7]">
                         Admin
                     </p>
