@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import Swal from 'sweetalert2';
 import { useNavigate, useParams } from 'react-router-dom'
 import { listCadernos, editCaderno, deleteCaderno } from '@/services/api/api_cadernos.js'
 import { listPaginas, createPagina, editPagina, deletePagina } from '@/services/api/api_paginas.js'
@@ -27,6 +28,8 @@ export default function CadernoDetalhePage() {
     function showFeedback(type, message) {
         setFeedback({ open: true, type, message })
     }
+
+    
 
     const bootstrapSession = useCallback(async () => {
         try {
@@ -128,7 +131,15 @@ export default function CadernoDetalhePage() {
     }
 
     async function handleCreatePagina() {
-        const titulo = prompt('Nome da nova página:')
+        // const titulo = ('Nome da nova página:') //prompt é a forma mais simples de pedir um nome, mas pode ser substituído por um modal mais elaborado se desejar
+
+        const { value: titulo } = await Swal.fire({
+            input: "textarea",
+            inputLabel: "Nome da nova página:",
+            inputPlaceholder: "Ex: Matemática",
+            showCancelButton: true
+        });
+        
         if (!titulo || !titulo.trim()) return
 
         try {
@@ -175,7 +186,25 @@ export default function CadernoDetalhePage() {
 
     async function handleDeleteCaderno() {
         if (!caderno) return
-        if (!window.confirm(`Excluir o caderno "${caderno.titulo}" e todas as suas páginas?`)) return
+
+        let deletado = false;
+
+        await Swal.fire({
+        title: `Excluir o caderno "${caderno.titulo}" e todas as suas páginas?`,
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: "Sim, excluir",
+        denyButtonText: `Cancelar`
+        }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed){
+            Swal.fire("Caderno excluído!", "", "success")
+            deletado = true;
+        }else if (result.isDenied) {
+            deletado = false;
+        }});
+
+        if (!deletado) return;
 
         try {
             const data = await deleteCaderno({ id: caderno.id })
