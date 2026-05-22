@@ -3,8 +3,11 @@
 // Lista de origens permitidas
 $origensPermitidas = [
     'http://localhost:5173',
+    'http://localhost:5174',
     'http://127.0.0.1:5173',
+    'http://127.0.0.1:5174',
     'http://papyrus.local:5173',
+    'http://papyrus.local:5174',
     'http://papyrus.local',
 ];
 
