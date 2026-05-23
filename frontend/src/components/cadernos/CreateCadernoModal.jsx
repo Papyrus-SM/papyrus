@@ -122,19 +122,6 @@ export default function CreateCadernoModal({ isOpen, onClose, onSubmit, loading,
                         />
                     </div>
 
-                    <div>
-                        <label htmlFor="descricao" className="mb-2 block text-sm font-medium text-[#3F3F39]">Descrição</label>
-                        <textarea
-                            id="descricao"
-                            name="descricao"
-                            value={formData.descricao}
-                            onChange={handleChange}
-                            placeholder="Opcional"
-                            rows={3}
-                            className="w-full rounded-xl border border-[#D9D9D0] bg-[#FAFAF7] px-4 py-3 text-sm text-[#1A1A1A] outline-none transition focus:border-[#1A1A1A]"
-                        />
-                    </div>
-
                     {error && <p className="text-sm text-[#7A2E2E]">{error}</p>}
 
                     <div className="flex justify-end gap-3 pt-4">
