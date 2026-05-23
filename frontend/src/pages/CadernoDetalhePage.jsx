@@ -163,7 +163,25 @@ export default function CadernoDetalhePage() {
     }
 
     async function handleDeletePagina(pagina) {
-        if (!window.confirm(`Excluir a página "${pagina.titulo}"?`)) return
+        if (!pagina) return
+
+        let deletado = false;
+
+        await Swal.fire({
+        title: `Excluir a Pagina "${pagina.titulo}" ?`,
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: "Sim, excluir",
+        denyButtonText: `Cancelar`
+        }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed){
+            deletado = true;
+        }else if (result.isDenied) {
+            deletado = false;
+        }});
+
+        if (!deletado) return;
 
         try {
             const data = await deletePagina({ id: pagina.id })
