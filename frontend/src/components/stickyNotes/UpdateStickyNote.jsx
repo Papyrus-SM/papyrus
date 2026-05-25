@@ -8,7 +8,6 @@ export default function UpdateStickyNote({setOpenModal, anotacao, reload}) {
     const initialStickyNote = {
         id: anotacao.id,
         titulo: anotacao.titulo,
-        //nome: '', // ======================================
         anotacao:  anotacao.texto,
         cor: anotacao.cor,
     }
@@ -17,8 +16,6 @@ export default function UpdateStickyNote({setOpenModal, anotacao, reload}) {
 
     /* estado antes do envio */
     const [loading, setLoading] = useState(false)
-
-    console.log(loading)
 
     /* msg sucesso ou erro */
     const [feedback, setFeedback] = useState({
@@ -42,27 +39,17 @@ export default function UpdateStickyNote({setOpenModal, anotacao, reload}) {
 
         const payload = {
             titulo: formData.titulo.trim(),
-            // nome: formData.nome.trim(), =================================
             anotacao: formData.anotacao,
         }
 
-        if(payload.titulo && payload.anotacao.trim() === '') {
+        if(!payload.titulo && payload.anotacao.trim() === '') {
             setFeedback({
                 type: 'error',
-                message: 'Esta vaziu!'
+                message: 'Informe um título ou uma anotação.'
             })
+            setLoading(false)
             return
         }
-
-        /* =========================================
-        if (!payload.nome.includes('A')) {
-            setFeedback({
-                type: 'error',
-                message: 'Nome não contem A',
-            })
-            return
-        }
-            */
 
         try {
             const data = await updateStickyNotes(formData); /* aqui envia os dados e pega o retorno do envio */
@@ -95,17 +82,12 @@ export default function UpdateStickyNote({setOpenModal, anotacao, reload}) {
         <>
             <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
                 <form onSubmit={handleSubmit} className="bg-white w-xl flex flex-col p-8 rounded-md">
-                    <button onClick={() => {setOpenModal(false)}} className="self-end p-4 absolute text-xl cursor-pointer">X</button>
+                    <button type="button" onClick={() => {setOpenModal(false)}} className="self-end p-4 absolute text-xl cursor-pointer">X</button>
                     <h1 className="mt-2 font-serif-display text-4xl text-center py-2 tracking-[-0.03em] text-[#1A1A1A]">
                         Editar Nota
                     </h1>
                     <label htmlFor="titulo" className="p-2">Titulo</label>
                     <input type="text" name="titulo" value={formData.titulo} onChange={handleChange} className="p-2 bg-gray-400/20 rounded-md" id="titulo" placeholder="Titulo"/>
-
-{/* =====================================================
-                    <label htmlFor="nome" className="p-2">nome</label>
-                    <input type="text" name="nome" value={formData.nome} onChange={handleChange} className="p-2 bg-gray-400/20 rounded-md" id="nome" placeholder="Insira seu nome"/>
-*/}
 
                     <label htmlFor="anotacao" className="p-2">Anotação</label>
                     <textarea name="anotacao" value={formData.anotacao} onChange={handleChange} className="p-2 bg-gray-400/20 rounded-md" id="anotacao" cols="30" rows="10" placeholder="Escreva sua nota aqui....."></textarea>
@@ -123,7 +105,9 @@ export default function UpdateStickyNote({setOpenModal, anotacao, reload}) {
 
                     </div>
 
-                    <button type="submit" className="p-2 mt-4 w-40 bg-green-300/80 rounded-full self-end cursor-pointer">Salvar</button>
+                    <button type="submit" disabled={loading} className="p-2 mt-4 w-40 bg-green-300/80 rounded-full self-end cursor-pointer disabled:opacity-70">
+                        {loading ? 'Salvando...' : 'Salvar'}
+                    </button>
                 </form>
             </div>
         </>

@@ -3,6 +3,7 @@
 include_once(__DIR__ . '/../../config/headers.php');
 include_once(__DIR__ . '/../../config/input.php');
 include_once(__DIR__ . '/../../config/conexao.php');
+include_once(__DIR__ . '/../../config/auth.php');
 
 session_start();
 
@@ -11,6 +12,8 @@ $retorno = [
     "mensagem" => "",
     "data" => []
 ];
+
+$usuario = requireStudent($retorno);
 
 if (!isset($_SESSION["usuario"])) {
     $retorno["status"] = "nok";
@@ -32,7 +35,7 @@ $stmt = $conexao->prepare("
 ");
 
 $stmt->execute([
-    ":user_id" => $_SESSION["usuario"]["id"]
+    ":user_id" => (int) $usuario["id"]
 ]);
 
 $cadernos = $stmt->fetchAll();

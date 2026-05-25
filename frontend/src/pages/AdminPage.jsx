@@ -130,13 +130,6 @@ export default function AdminPage() {
         setSelectedUser(null)
     }
 
-    async function refreshAdminData() {
-        await Promise.all([
-            loadUsuarios(),
-            loadAnalytics(),
-        ])
-    }
-
     async function handleEditUser(payload) {
         try {
             setLoadingForm(true)

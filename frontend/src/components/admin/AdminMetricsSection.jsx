@@ -39,7 +39,6 @@ function RoleMetricCard({ item }) {
 
 export default function AdminMetricsSection({ data, loading }) {
     const resumo = data?.resumo || {}
-    const usuariosPorPapel = data?.usuarios_por_papel || []
 
     const totalUsuarios = toNumber(resumo.total_usuarios)
     const totalEstudantes = toNumber(resumo.total_estudantes)

@@ -4,6 +4,7 @@
 include_once(__DIR__ . '/../../config/headers.php');
 include_once(__DIR__ . '/../../config/input.php');
 include_once(__DIR__ . '/../../config/conexao.php');
+include_once(__DIR__ . '/../../config/auth.php');
 
 // Inicia a sessão para identificar o usuário autenticado.
 session_start();
@@ -14,6 +15,8 @@ $retorno = [
     "mensagem" => "",
     "data" => []
 ];
+
+$usuario = requireStudent($retorno);
 
 // Apenas usuários autenticados podem editar matérias.
 if (!isset($_SESSION["usuario"])) {
@@ -89,7 +92,7 @@ $executou = $stmt->execute([
     ":descricao" => $descricao ?: null,
     ":color_hex" => $color_hex,
     ":id" => $id,
-    ":user_id" => $_SESSION["usuario"]["id"]
+    ":user_id" => (int) $usuario["id"]
 ]);
 
 if ($executou && $stmt->rowCount() > 0) {

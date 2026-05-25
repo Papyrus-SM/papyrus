@@ -5,12 +5,15 @@ session_start();
 include_once(__DIR__ . '/../../config/headers.php');
 include_once(__DIR__ . '/../../config/input.php');
 include_once(__DIR__ . '/../../config/conexao.php');
+include_once(__DIR__ . '/../../config/auth.php');
 
 $retorno = [
     "status" => "",
     "mensagem" => "",
     "data" => []
 ];
+
+$usuario = requireStudent($retorno);
 
 if (!isset($_SESSION["usuario"])) {
     $retorno["status"] = "nok";
@@ -79,7 +82,7 @@ if ($data_entrega !== null && $data_entrega !== "") {
 }
 
 $conexao = getConexao();
-$user_id = $_SESSION["usuario"]["id"] ?? 0;
+$user_id = (int) $usuario["id"];
 
 $stmt = $conexao->prepare("
     SELECT t.id

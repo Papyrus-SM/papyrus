@@ -5,7 +5,6 @@ import FormFeedback from "../auth/FormFeedback";
 const initialStickyNote = {
     titulo: '',
     anotacao: '',
-    //teste: '', // ================== Autoria ==========
     cor: '#fdf28e',
 }
 
@@ -24,10 +23,6 @@ export default function FormStickyNote({ setOpenModal, reload }) {
         mensagem: '',
     })
 
-    console.log(formData) /* para verificar os dados do formulário em tempo real */
-    console.log(loading) /* para verificar o estado de carregamento */
-    console.log(feedback) /* para verificar o feedback visual */
-
     /* atualiza o que esta escrito nas anotacoes conforme é anotado */
     function handleChange(e) {
         const { name, value } = e.target; /* pega o nome do campo e o valor digitado */
@@ -45,33 +40,21 @@ export default function FormStickyNote({ setOpenModal, reload }) {
         const payload = {
             titulo: formData.titulo.trim(),
             anotacao: formData.anotacao,
-            //teste: formData.teste.trim(),   // ============= Autoria | Teste @ ==========
             cor: formData.cor,
         }
 
         
-        if(!payload.titulo && !payload.anotacao) {
+        if(!payload.titulo && !payload.anotacao.trim()) {
             setFeedback({
                 type: 'error',
-                message: 'Esta vaziu'
+                message: 'Informe um título ou uma anotação.'
             })
+            setLoading(false)
             return
         }
-
-
-        /* ========= Autoria | Teste @ ===========
-        if (!payload.teste.includes('@')) {
-            setFeedback({
-                type: 'error',
-                message: "teste faltou @"
-            })
-            return
-        }
-
-        */
 
         try {
-            const data = await registerStickyNotes(formData); /* aqui envia os dados e pega o retorno do envio */
+            const data = await registerStickyNotes(payload);
 
             if (data.status === "ok") {
                 setFeedback({
@@ -98,17 +81,13 @@ export default function FormStickyNote({ setOpenModal, reload }) {
         <>
             <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
                 <form onSubmit={handleSubmit} className="bg-white w-xl flex flex-col p-8 rounded-md">
-                    <button onClick={() => { setOpenModal(false) }} className="self-end p-4 absolute text-xl cursor-pointer">X</button>
+                    <button type="button" onClick={() => { setOpenModal(false) }} className="self-end p-4 absolute text-xl cursor-pointer">X</button>
                     <h1 className="mt-2 font-serif-display text-4xl text-center py-2 tracking-[-0.03em] text-[#1A1A1A]">
                         Criar Nota
                     </h1>
                     <label htmlFor="titulo" className="p-2">Titulo</label>
                     <input type="text" name="titulo" value={formData.titulo} onChange={handleChange} className="p-2 bg-gray-400/20 rounded-md" id="titulo" placeholder="Titulo" />
 
-{/* ================ Autoria | Teste @ =============
-                    <label htmlFor="teste" className="p-2">Teste</label>
-                    <input type="text" name="teste" value={formData.teste} onChange={handleChange} className="p-2 bg-gray-400/20 rounded-md" id="teste" placeholder="insira" />
-*/}
                     <label htmlFor="anotacao" className="p-2">Anotação</label>
                     <textarea name="anotacao" value={formData.anotacao} onChange={handleChange} className="p-2 bg-gray-400/20 rounded-md" id="anotacao" cols="30" rows="10" placeholder="Escreva sua nota aqui....."></textarea>
 
@@ -125,7 +104,9 @@ export default function FormStickyNote({ setOpenModal, reload }) {
 
                     </div>
 
-                    <button type="submit" className="p-2 mt-4 w-40 bg-green-300/80 rounded-full self-end cursor-pointer">Salvar</button>
+                    <button type="submit" disabled={loading} className="p-2 mt-4 w-40 bg-green-300/80 rounded-full self-end cursor-pointer disabled:opacity-70">
+                        {loading ? 'Salvando...' : 'Salvar'}
+                    </button>
                 </form>
             </div>
         </>

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import Swal from 'sweetalert2';
 import { useNavigate, useParams } from 'react-router-dom'
-import { listCadernos, editCaderno, deleteCaderno } from '@/services/api/api_cadernos.js'
+import { listCadernos, deleteCaderno } from '@/services/api/api_cadernos.js'
 import { listPaginas, createPagina, editPagina, deletePagina } from '@/services/api/api_paginas.js'
 import { validateSession } from '@/services/api/api_usuario.js'
 import FeedbackToast from '@/components/ui/FeedbackToast'

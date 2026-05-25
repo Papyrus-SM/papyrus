@@ -5,12 +5,15 @@ session_start();
 include_once(__DIR__ . '/../../config/headers.php');
 include_once(__DIR__ . '/../../config/input.php');
 include_once(__DIR__ . '/../../config/conexao.php');
+include_once(__DIR__ . '/../../config/auth.php');
 
 $retorno = [
     "status" => "",
     "mensagem" => "",
     "data" => []
 ];
+
+$usuario = requireStudent($retorno);
 
 // Endpoint para editar um flashcard existente.
 // Padrão: valida sessão, valida que o flashcard pertence ao usuário,
@@ -36,7 +39,7 @@ if (empty($pergunta) || empty($resposta)) {
     exit;
 }
 
-$user_id = $_SESSION["usuario"]["id"] ?? 0;
+$user_id = (int) $usuario["id"];
 
 if ($user_id <= 0) {
     $retorno["status"] = "nok";

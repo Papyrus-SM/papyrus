@@ -1,9 +1,5 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 // Arquivos de configuração compartilhados da API:
 // headers.php -> define cabeçalhos da resposta (JSON, CORS, etc.)
 // input.php -> fornece funções utilitárias para ler o body da requisição
@@ -11,8 +7,7 @@ error_reporting(E_ALL);
 include_once(__DIR__ . '/../../config/headers.php');
 include_once(__DIR__ . '/../../config/input.php');
 include_once(__DIR__ . '/../../config/conexao.php');
-
-session_start();
+include_once(__DIR__ . '/../../config/auth.php');
 
 // Estrutura padrão de resposta da API.
 $retorno = [
@@ -21,19 +16,13 @@ $retorno = [
     "data" => []
 ];
 
-// Verifica se o usuário está autenticado.
-if (!isset($_SESSION["usuario"]["id"])) {
-    $retorno["status"] = "nok";
-    $retorno["mensagem"] = "Usuário não autenticado.";
-    echo json_encode($retorno);
-    exit;
-}
+$usuario = requireStudent($retorno);
 
 // Lê o corpo da requisição HTTP e transforma em array.
 $body = getBody();
 
 // ID do usuário logado (via sessão).
-$user_id = $_SESSION["usuario"]["id"];
+$user_id = (int) $usuario["id"];
 
 // Recupera o ID da conversa do body.
 $conversa_id = $body["conversa_id"] ?? null;

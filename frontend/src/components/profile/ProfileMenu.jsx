@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { deleteUser, editUser } from '@/services/api/api_usuario.js'
 import ProfileTrigger from '@/components/profile/ProfileTrigger'
 import ProfileModal from '@/components/profile/ProfileModal'
@@ -15,6 +15,12 @@ export default function ProfileMenu({ user, setUser, onLogout }) {
     const nomeCompleto = user?.nome || 'Usuário'
     const primeiroNome = nomeCompleto.split(' ')[0]
     const email = user?.email || 'Sem e-mail'
+
+    const handleClose = useCallback(() => {
+        setIsOpen(false)
+        setIsEditing(false)
+        setDisplayName(user?.nome || '')
+    }, [user])
 
     useEffect(() => {
         setDisplayName(user?.nome || '')
@@ -36,13 +42,7 @@ export default function ProfileMenu({ user, setUser, onLogout }) {
             document.removeEventListener('keydown', handleEscape)
             document.body.style.overflow = 'auto'
         }
-    }, [isOpen, user])
-
-    function handleClose() {
-        setIsOpen(false)
-        setIsEditing(false)
-        setDisplayName(user?.nome || '')
-    }
+    }, [isOpen, handleClose])
 
     async function handleSaveName() {
         try {

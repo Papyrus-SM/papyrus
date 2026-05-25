@@ -5,6 +5,7 @@ session_start();
 include_once(__DIR__ . '/../../config/headers.php');
 include_once(__DIR__ . '/../../config/input.php');
 include_once(__DIR__ . '/../../config/conexao.php');
+include_once(__DIR__ . '/../../config/auth.php');
 
 $retorno = [
     "status" => "",
@@ -12,7 +13,8 @@ $retorno = [
     "data" => []
 ];
 
-$user_id = $_SESSION["usuario"]["id"] ?? 0;
+$usuario = requireStudent($retorno);
+$user_id = (int) $usuario["id"];
 // Este endpoint retorna a lista de flashcards do usuário logado.
 // Segue o mesmo padrão das outras features: valida sessão, monta
 // resposta padrão e executa a consulta ao banco via PDO.

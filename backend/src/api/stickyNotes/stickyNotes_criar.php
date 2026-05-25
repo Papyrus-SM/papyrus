@@ -1,9 +1,5 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 // Arquivos de configuração compartilhados da API:
 // headers.php -> define cabeçalhos da resposta (JSON, CORS, etc.)
 // input.php -> fornece funções utilitárias para ler o body da requisição
@@ -11,8 +7,7 @@ error_reporting(E_ALL);
 include_once(__DIR__ . '/../../config/headers.php');
 include_once(__DIR__ . '/../../config/input.php');
 include_once(__DIR__ . '/../../config/conexao.php');
-
-session_start();
+include_once(__DIR__ . '/../../config/auth.php');
 
 // Estrutura padrão de resposta da API.
 // Ela será preenchida ao longo da execução e devolvida em JSON no final.
@@ -22,11 +17,13 @@ $retorno = [
     "data" => []
 ];
 
+$usuario = requireStudent($retorno);
+
 // Lê o corpo da requisição HTTP e transforma em array.
 // Esse endpoint espera receber os dados do usuário em JSON.
 $body = getBody();
 
-$user_id = $_SESSION["usuario"]["id"]; // aqui vai ficar a sessão para definir que usuario esta usando  $user_id = $_SESSION["usuario"]["id"];
+$user_id = (int) $usuario["id"];
 
 
 // Coleta e sanitização inicial dos dados recebidos.
@@ -36,13 +33,17 @@ $anotacao = $body["anotacao"] ?? "";
 // Escolha de cores para as notas
 $cor = $body["cor"] ?? "#ffffff";
 
+if (!preg_match('/^#[0-9A-Fa-f]{6}$/', $cor)) {
+    $cor = "#ffffff";
+}
+
 // Validação dos campos obrigatórios.
 // Se qualquer campo vier vazio, a execução é encerrada imediatamente.
 if (
     empty($titulo) && empty($anotacao) // empty() verifica se a string é vazia ou contém apenas espaços em branco
 ) {
     $retorno["status"] = "nok";
-    $retorno["mensagem"] = "Tudo vaziu...";
+    $retorno["mensagem"] = "Informe um título ou uma anotação.";
 
     echo json_encode($retorno);
     exit;

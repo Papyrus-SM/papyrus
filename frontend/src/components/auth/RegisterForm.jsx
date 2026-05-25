@@ -8,7 +8,6 @@ const initialForm = {
     senha: '',
     data_nascimento: '',
     genero: '',
-    //email2: '', // ============ Autoria | text @ ===========
 }
 
 export default function RegisterForm() {
@@ -71,20 +70,6 @@ export default function RegisterForm() {
         } finally {
             setLoading(false)
         }
-
-        /* =================== Autoria | text @ ===============
-        const payload = {
-            email2: formData.email2.trim(),
-        }
-
-        if(!payload.email2.includes('@')) {
-            console.log("erro")
-            setFeedback({
-                type: 'error',
-                message: 'Erro @',
-            })
-        }
-            */
 
     }
 
@@ -157,30 +142,6 @@ export default function RegisterForm() {
                         required
                     />
                 </div>
-
-                {/* ============= Autoria | text "@" =============
-
-                <div>
-                    <label
-                        htmlFor="email2"
-                        className="mb-2 block text-sm font-medium text-[#3F3F39]"
-                    >
-                        Outro E-mail
-                    </label>
-                    <input
-                        id="email2"
-                        name="email2"
-                        type="text"
-                        value={formData.email2}
-                        onChange={handleChange}
-                        placeholder="alternativo@email.com"
-                        className="w-full rounded-xl border border-[#D9D9D0] bg-[#FAFAF7] px-4 py-3 text-sm text-[#1A1A1A] outline-none transition focus:border-[#1A1A1A]"
-                        required
-                    />
-                </div>
-
-                */}
-
 
                 {/*
                     Campo de senha.

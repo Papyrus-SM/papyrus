@@ -23,6 +23,37 @@ import PomodoroWidget from '@/components/pomodoro/PomodoroWidget.jsx'
 
 import ChatButton from '@/components/chat/ChatButton'
 
+function getStoredUser() {
+    const storedUser = localStorage.getItem('papyrus_user')
+
+    if (!storedUser) return null
+
+    try {
+        return JSON.parse(storedUser)
+    } catch {
+        localStorage.removeItem('papyrus_user')
+        return null
+    }
+}
+
+function StudentRoute({ children }) {
+    const user = getStoredUser()
+
+    if (!user) return <Navigate to="/login" replace />
+    if (user.papel === 'admin') return <Navigate to="/admin" replace />
+
+    return children
+}
+
+function AdminRoute({ children }) {
+    const user = getStoredUser()
+
+    if (!user) return <Navigate to="/login" replace />
+    if (user.papel !== 'admin') return <Navigate to="/dashboard" replace />
+
+    return children
+}
+
 export default function App() {
     const location = useLocation()
 
@@ -39,25 +70,25 @@ export default function App() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/login" element={<LoginPage />} />
 
-                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/dashboard" element={<StudentRoute><DashboardPage /></StudentRoute>} />
 
-                <Route path="/materias" element={<MateriasPage />} />
-                <Route path="/materias/:materiaId" element={<MateriaDetalhePage />} />
+                <Route path="/materias" element={<StudentRoute><MateriasPage /></StudentRoute>} />
+                <Route path="/materias/:materiaId" element={<StudentRoute><MateriaDetalhePage /></StudentRoute>} />
 
-                <Route path="/sticky-notes" element={<StickyNotesPage />} />
+                <Route path="/sticky-notes" element={<StudentRoute><StickyNotesPage /></StudentRoute>} />
 
-                <Route path="/cadernos" element={<CadernosPage />} />
-                <Route path="/cadernos/:cadernoId" element={<CadernoDetalhePage />} />
+                <Route path="/cadernos" element={<StudentRoute><CadernosPage /></StudentRoute>} />
+                <Route path="/cadernos/:cadernoId" element={<StudentRoute><CadernoDetalhePage /></StudentRoute>} />
 
-                <Route path="/tarefas" element={<TarefasPage />} />
+                <Route path="/tarefas" element={<StudentRoute><TarefasPage /></StudentRoute>} />
 
-                <Route path="/metodos" element={<MetodosPage />} />
-                <Route path="/metodos/pomodoro" element={<PomodoroPage />} />
-                <Route path="/metodos/flashcards" element={<FlashCardsPage />} />
+                <Route path="/metodos" element={<StudentRoute><MetodosPage /></StudentRoute>} />
+                <Route path="/metodos/pomodoro" element={<StudentRoute><PomodoroPage /></StudentRoute>} />
+                <Route path="/metodos/flashcards" element={<StudentRoute><FlashCardsPage /></StudentRoute>} />
 
                 <Route path="/flashcards" element={<Navigate to="/metodos/flashcards" replace />} />
 
-                <Route path="/admin" element={<AdminPage />} />
+                <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
             </Routes>
 
             <PomodoroWidget />

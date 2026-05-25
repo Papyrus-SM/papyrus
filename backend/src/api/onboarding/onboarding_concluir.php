@@ -4,6 +4,7 @@
 include_once(__DIR__ . '/../../config/headers.php');
 include_once(__DIR__ . '/../../config/input.php');
 include_once(__DIR__ . '/../../config/conexao.php');
+include_once(__DIR__ . '/../../config/auth.php');
 
 // Inicia a sessão para identificar o usuário autenticado.
 session_start();
@@ -14,6 +15,8 @@ $retorno = [
     "mensagem" => "",
     "data" => []
 ];
+
+$usuario = requireStudent($retorno);
 
 // Apenas usuários autenticados podem concluir o onboarding.
 if (!isset($_SESSION["usuario"])) {
@@ -38,7 +41,7 @@ $stmt = $conexao->prepare("
 ");
 
 $executou = $stmt->execute([
-    ":user_id" => $_SESSION["usuario"]["id"]
+    ":user_id" => (int) $usuario["id"]
 ]);
 
 if ($executou) {

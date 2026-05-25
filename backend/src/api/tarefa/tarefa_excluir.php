@@ -10,6 +10,7 @@ session_start();
 include_once(__DIR__ . '/../../config/headers.php');
 include_once(__DIR__ . '/../../config/input.php');
 include_once(__DIR__ . '/../../config/conexao.php');
+include_once(__DIR__ . '/../../config/auth.php');
 
 
 
@@ -20,6 +21,8 @@ $retorno = [
     "mensagem" => "",
     "data" => []
 ];
+
+$usuario = requireStudent($retorno);
 
 
 
@@ -58,7 +61,7 @@ if (!isset($_SESSION["usuario"])) {
 }
 
 // Pega o ID do usuário logado (agora sabemos que existe)
-$user_id = $_SESSION["usuario"] ["id"] ?? 0;
+$user_id = (int) $usuario["id"];
 
 // Validação extra 
 if ($user_id <= 0) {

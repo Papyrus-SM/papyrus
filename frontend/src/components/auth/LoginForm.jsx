@@ -51,7 +51,7 @@ export default function LoginForm() {
                     message: data.mensagem || 'Erro ao fazer login.',
                 })
             }
-        } catch (error) {
+        } catch {
             setFeedback({
                 type: 'error',
                 message: 'Erro ao conectar com o servidor.',
