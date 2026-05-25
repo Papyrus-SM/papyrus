@@ -17,7 +17,13 @@ export default function PomodoroWidget() {
     const [scale, setScale] = useState(1)
     const dragStartRef = useRef(null)
 
-    if (!isRunning || location.pathname === '/metodos/pomodoro') return null
+    // Não renderizar em rotas públicas, se não logado, ou se a página do pomodoro estiver aberta
+    const publicRoutes = ['/', '/login', '/register']
+    const isPublicRoute = publicRoutes.includes(location.pathname)
+    const isUserLoggedIn = !!localStorage.getItem('papyrus_user')
+    const isPomodoroPage = location.pathname === '/metodos/pomodoro'
+
+    if (!isRunning || isPublicRoute || !isUserLoggedIn || isPomodoroPage) return null
 
     const strokeDashoffset = BASE_CIRCUMFERENCE * (1 - progress)
     const isDone = phase === 'done'
