@@ -7,6 +7,7 @@ const initialForm = {
     data_nascimento: '',
     genero: '',
     papel: 'estudante',
+    status_conta: 'ativo',
 }
 
 export default function AdminUserModal({
@@ -41,6 +42,7 @@ export default function AdminUserModal({
             data_nascimento: userData.data_nascimento || '',
             genero: userData.genero || '',
             papel: userData.papel || 'estudante',
+            status_conta: userData.status_conta || 'ativo',
         })
 
         const previousOverflow = document.body.style.overflow
@@ -77,6 +79,7 @@ export default function AdminUserModal({
             id: formData.id,
             nome: formData.nome.trim(),
             papel: formData.papel,
+            status_conta: formData.status_conta,
         }
 
         if (!payload.id) {
@@ -86,6 +89,11 @@ export default function AdminUserModal({
 
         if (!payload.nome) {
             setError('O nome é obrigatório.')
+            return
+        }
+
+        if (!['ativo', 'bloqueado'].includes(payload.status_conta)) {
+            setError('Status da conta inválido.')
             return
         }
 
@@ -102,6 +110,8 @@ export default function AdminUserModal({
     }
 
     if (!isOpen || !userData) return null
+
+    const isBlocked = formData.status_conta === 'bloqueado'
 
     return (
         <div
@@ -127,7 +137,7 @@ export default function AdminUserModal({
                             Editar usuário
                         </h2>
                         <p className="mt-3 text-sm leading-7 text-[#5A5A52]">
-                            Atualize o nome e o papel do usuário selecionado.
+                            Atualize o nome, o papel e o status de acesso do usuário selecionado.
                         </p>
                     </div>
 
@@ -227,6 +237,33 @@ export default function AdminUserModal({
                             <option value="estudante">Estudante</option>
                             <option value="admin">Administrador</option>
                         </select>
+                    </div>
+
+                    <div>
+                        <label
+                            htmlFor="admin_status_conta"
+                            className="mb-2 block text-sm font-medium text-[#3F3F39]"
+                        >
+                            Status da conta
+                        </label>
+                        <select
+                            id="admin_status_conta"
+                            name="status_conta"
+                            value={formData.status_conta}
+                            onChange={handleChange}
+                            className={`w-full rounded-xl border px-4 py-3 text-sm outline-none transition focus:border-[#1A1A1A] ${
+                                isBlocked
+                                    ? 'border-[#E7C7C7] bg-[#FFF8F8] text-[#7A2E2E]'
+                                    : 'border-[#D9D9D0] bg-[#FAFAF7] text-[#1A1A1A]'
+                            }`}
+                        >
+                            <option value="ativo">Ativo</option>
+                            <option value="bloqueado">Bloqueado</option>
+                        </select>
+
+                        <p className="mt-2 text-xs leading-5 text-[#8A8A80]">
+                            Usuários bloqueados permanecem cadastrados no banco, mas não conseguem acessar a plataforma.
+                        </p>
                     </div>
 
                     {error && (

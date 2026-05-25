@@ -23,26 +23,14 @@ function MetricCard({ label, value, description }) {
     )
 }
 
-function RoleMetricCard({ item }) {
-    return (
-        <article className="rounded-2xl border border-[#E8E8DF] bg-[#FAFAF7] p-5">
-            <p className="text-[11px] uppercase tracking-[0.14em] text-[#8A8A80]">
-                {item.label}
-            </p>
-
-            <strong className="mt-3 block text-3xl font-medium tracking-[-0.04em] text-[#1A1A1A]">
-                {toNumber(item.total)}
-            </strong>
-        </article>
-    )
-}
-
 export default function AdminMetricsSection({ data, loading }) {
     const resumo = data?.resumo || {}
 
     const totalUsuarios = toNumber(resumo.total_usuarios)
     const totalEstudantes = toNumber(resumo.total_estudantes)
     const totalAdmins = toNumber(resumo.total_admins)
+    const totalAtivos = toNumber(resumo.total_ativos)
+    const totalBloqueados = toNumber(resumo.total_bloqueados)
 
     if (loading) {
         return (
@@ -81,11 +69,23 @@ export default function AdminMetricsSection({ data, loading }) {
                 </p>
             </section>
 
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
                 <MetricCard
                     label="Total de usuários"
                     value={totalUsuarios}
                     description="Quantidade total de contas cadastradas na plataforma."
+                />
+
+                <MetricCard
+                    label="Usuários ativos"
+                    value={totalAtivos}
+                    description="Contas liberadas para realizar login e acessar o sistema."
+                />
+
+                <MetricCard
+                    label="Usuários bloqueados"
+                    value={totalBloqueados}
+                    description="Contas impedidas de acessar a plataforma sem remoção do banco."
                 />
 
                 <MetricCard

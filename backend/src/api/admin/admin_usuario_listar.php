@@ -28,7 +28,7 @@ if (($_SESSION["usuario"]["papel"] ?? "") !== "admin") {
 $conexao = getConexao();
 
 $stmt = $conexao->prepare("
-    SELECT id, nome, email, data_nascimento, genero, papel
+    SELECT id, nome, email, data_nascimento, genero, papel, status_conta
     FROM users
     ORDER BY nome ASC
 ");

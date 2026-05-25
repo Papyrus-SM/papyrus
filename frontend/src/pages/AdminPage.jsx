@@ -106,6 +106,12 @@ export default function AdminPage() {
                 return
             }
 
+            if (parsedUser?.status_conta === 'bloqueado') {
+                localStorage.removeItem('papyrus_user')
+                navigate('/login')
+                return
+            }
+
             setUser(parsedUser)
         } catch {
             localStorage.removeItem('papyrus_user')
@@ -150,10 +156,18 @@ export default function AdminPage() {
                         ...user,
                         nome: usuarioAtualizado.nome,
                         papel: usuarioAtualizado.papel,
+                        status_conta: usuarioAtualizado.status_conta,
                     }
 
                     setUser(updatedLoggedUser)
                     localStorage.setItem('papyrus_user', JSON.stringify(updatedLoggedUser))
+
+                    if (usuarioAtualizado.status_conta === 'bloqueado') {
+                        localStorage.removeItem('papyrus_user')
+                        handleCloseModal()
+                        navigate('/login')
+                        return
+                    }
 
                     if (usuarioAtualizado.papel !== 'admin') {
                         handleCloseModal()

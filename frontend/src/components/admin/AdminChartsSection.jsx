@@ -115,11 +115,13 @@ export default function AdminChartsSection({ data, loading }) {
     const generos = normalizeChartData(data?.generos || [])
     const faixasEtarias = normalizeChartData(data?.faixas_etarias || [])
     const usuariosPorPapel = normalizeChartData(data?.usuarios_por_papel || [])
+    const usuariosPorStatus = normalizeChartData(data?.usuarios_por_status || [])
     const cadastrosPorMes = normalizeChartData(data?.cadastros_por_mes || [])
 
     const hasGeneros = generos.some((item) => item.total > 0)
     const hasFaixasEtarias = faixasEtarias.some((item) => item.total > 0)
     const hasUsuariosPorPapel = usuariosPorPapel.some((item) => item.total > 0)
+    const hasUsuariosPorStatus = usuariosPorStatus.some((item) => item.total > 0)
     const hasCadastrosPorMes = cadastrosPorMes.some((item) => item.total > 0)
 
     if (loading) {
@@ -154,8 +156,9 @@ export default function AdminChartsSection({ data, loading }) {
                 </h2>
 
                 <p className="mt-4 max-w-2xl text-[16px] leading-8 text-[#5A5A52]">
-                    Interprete dados demográficos, permissões e crescimento da base
-                    de usuários por meio de visualizações simples e objetivas.
+                    Interprete dados demográficos, permissões, status de acesso e
+                    crescimento da base de usuários por meio de visualizações simples
+                    e objetivas.
                 </p>
             </section>
 
@@ -215,6 +218,18 @@ export default function AdminChartsSection({ data, loading }) {
                         <EmptyChartMessage message="Ainda não há dados suficientes para exibir o total por papel." />
                     ) : (
                         <BasicBarChart data={usuariosPorPapel} />
+                    )}
+                </ChartCard>
+
+                <ChartCard
+                    eyebrow="Acesso"
+                    title="Status das contas"
+                    description="Comparação entre usuários ativos e usuários bloqueados no sistema."
+                >
+                    {!hasUsuariosPorStatus ? (
+                        <EmptyChartMessage message="Ainda não há dados suficientes para exibir o status das contas." />
+                    ) : (
+                        <BasicBarChart data={usuariosPorStatus} />
                     )}
                 </ChartCard>
 

@@ -21,6 +21,8 @@ export async function listAdminUsers() {
 }
 
 export async function editAdminUser(payload) {
+    // Payload esperado após a PBI de bloqueio:
+    // { id, nome, papel, status_conta }
     const response = await fetch(`${API_BASE_URL}/admin/admin_usuario_editar.php`, {
         method: 'POST',
         headers: {

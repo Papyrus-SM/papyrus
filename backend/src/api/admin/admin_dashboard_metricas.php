@@ -34,7 +34,9 @@ $stmtResumo = $conexao->prepare("
     SELECT
         COUNT(*) AS total_usuarios,
         SUM(CASE WHEN papel = 'estudante' THEN 1 ELSE 0 END) AS total_estudantes,
-        SUM(CASE WHEN papel = 'admin' THEN 1 ELSE 0 END) AS total_admins
+        SUM(CASE WHEN papel = 'admin' THEN 1 ELSE 0 END) AS total_admins,
+        SUM(CASE WHEN status_conta = 'ativo' THEN 1 ELSE 0 END) AS total_ativos,
+        SUM(CASE WHEN status_conta = 'bloqueado' THEN 1 ELSE 0 END) AS total_bloqueados
     FROM users
 ");
 $stmtResumo->execute();
@@ -117,6 +119,25 @@ $stmtUsuariosPorPapel = $conexao->prepare("
 $stmtUsuariosPorPapel->execute();
 $usuariosPorPapel = $stmtUsuariosPorPapel->fetchAll();
 
+/**
+ * TOTAL DE USUÁRIOS POR STATUS DA CONTA
+ */
+$stmtUsuariosPorStatus = $conexao->prepare("
+    SELECT
+        status_conta AS `key`,
+        CASE
+            WHEN status_conta = 'ativo' THEN 'Ativos'
+            WHEN status_conta = 'bloqueado' THEN 'Bloqueados'
+            ELSE 'Não informado'
+        END AS label,
+        COUNT(*) AS total
+    FROM users
+    GROUP BY status_conta, label
+    ORDER BY total DESC
+");
+$stmtUsuariosPorStatus->execute();
+$usuariosPorStatus = $stmtUsuariosPorStatus->fetchAll();
+
 $stmtCadastrosPorMes = $conexao->prepare("
     SELECT
         DATE_FORMAT(created_at, '%m/%Y') AS label,
@@ -135,11 +156,14 @@ $retorno["data"] = [
     "resumo" => [
         "total_usuarios" => (int) ($resumo["total_usuarios"] ?? 0),
         "total_estudantes" => (int) ($resumo["total_estudantes"] ?? 0),
-        "total_admins" => (int) ($resumo["total_admins"] ?? 0)
+        "total_admins" => (int) ($resumo["total_admins"] ?? 0),
+        "total_ativos" => (int) ($resumo["total_ativos"] ?? 0),
+        "total_bloqueados" => (int) ($resumo["total_bloqueados"] ?? 0)
     ],
     "generos" => $generos,
     "faixas_etarias" => $faixasEtarias,
     "usuarios_por_papel" => $usuariosPorPapel,
+    "usuarios_por_status" => $usuariosPorStatus,
     "cadastros_por_mes" => $cadastrosPorMes
 ];
 

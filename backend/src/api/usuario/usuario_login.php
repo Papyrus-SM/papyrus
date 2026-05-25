@@ -46,9 +46,10 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 $conexao = getConexao();
 
 // Busca no banco o usuário correspondente ao e-mail informado.
-// Também traz o hash da senha para comparação segura.
+// Também traz o hash da senha para comparação segura e o status da conta
+// para impedir login de usuários bloqueados.
 $stmt = $conexao->prepare("
-    SELECT id, nome, email, senha_hash, papel
+    SELECT id, nome, email, senha_hash, papel, status_conta
     FROM users
     WHERE email = :email
     LIMIT 1
@@ -79,13 +80,26 @@ if (!password_verify($senha, $usuario["senha_hash"])) {
     exit;
 }
 
+// Se a senha estiver correta, verifica se a conta foi bloqueada pelo admin.
+// O usuário continua existindo no banco, mas não pode acessar a plataforma.
+$statusConta = $usuario["status_conta"] ?? "ativo";
+
+if ($statusConta === "bloqueado") {
+    $retorno["status"] = "nok";
+    $retorno["mensagem"] = "Esta conta está bloqueada. Entre em contato com um administrador.";
+
+    echo json_encode($retorno);
+    exit;
+}
+
 // Se login for válido, salva os dados principais do usuário na sessão.
 // Isso permite autenticação nas próximas requisições.
 $_SESSION["usuario"] = [
     "id" => $usuario["id"],
     "nome" => $usuario["nome"],
     "email" => $usuario["email"],
-    "papel" => $usuario["papel"]
+    "papel" => $usuario["papel"],
+    "status_conta" => $statusConta
 ];
 
 // Monta resposta de sucesso com os dados do usuário autenticado.
