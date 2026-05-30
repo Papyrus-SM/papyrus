@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS users (
         'feminino',
         'prefiro_nao_dizer'
     ) NOT NULL,
-    papel ENUM('admin', 'estudante') NOT NULL DEFAULT 'estudante'
+    papel ENUM('admin', 'estudante') NOT NULL DEFAULT 'estudante',
+   status_conta ENUM('ativo', 'bloqueado') NOT NULL DEFAULT 'ativo'
 );
 
 -- ------------------------------------------------------------
