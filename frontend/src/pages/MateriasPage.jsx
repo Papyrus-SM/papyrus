@@ -89,7 +89,9 @@ export default function MateriasPage() {
     async function handleCreateMateria(payload) {
         try {
             setLoadingCreateMateria(true)
-            const data = await createMateria(payload)
+            const data = await createMateria({
+                materias: [payload]
+            })
             if (data.status === 'ok') {
                 await loadMaterias()
                 setShowCreateModal(false)
