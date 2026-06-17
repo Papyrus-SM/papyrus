@@ -10,7 +10,7 @@ const items = [
     { label: 'Cadernos', to: '/cadernos', disabled: false },
     { label: 'Métodos', to: '/metodos', disabled: false },
     { label: 'Post-its', to: '/sticky-notes', disabled: false },
-    { label: 'Calendário', to: null, disabled: true },
+    { label: 'Calendário', to: '/calendario', disabled: false },
 ]
 
 export default function DashboardSidebar({ user, setUser }) {
@@ -86,15 +86,6 @@ export default function DashboardSidebar({ user, setUser }) {
             </nav>
 
             <div className="mt-auto space-y-4">
-                <div className="rounded-2xl border border-[#E8E8DF] bg-white px-4 py-4">
-                    <p className="text-xs uppercase tracking-[0.12em] text-[#8A8A80]">
-                        Em breve
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-[#5A5A52]">
-                        Calendário, flashcards, Pomodoro e cadernos inteligentes.
-                    </p>
-                </div>
-
                 <ProfileMenu user={user} setUser={setUser} onLogout={handleLogout} />
 
                 <button

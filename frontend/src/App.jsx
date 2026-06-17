@@ -9,6 +9,7 @@ import MateriasPage from '@/pages/MateriasPage.jsx'
 import MateriaDetalhePage from '@/pages/MateriaDetalhePage.jsx'
 import StickyNotesPage from '@/pages/StickyNotesPage.jsx'
 import TarefasPage from '@/pages/TarefasPage.jsx'
+import CalendarioPage from '@/pages/CalendarioPage.jsx'
 import AdminPage from '@/pages/AdminPage.jsx'
 
 import CadernosPage from '@/pages/CadernosPage'
@@ -81,6 +82,8 @@ export default function App() {
                 <Route path="/cadernos/:cadernoId" element={<StudentRoute><CadernoDetalhePage /></StudentRoute>} />
 
                 <Route path="/tarefas" element={<StudentRoute><TarefasPage /></StudentRoute>} />
+
+                <Route path="/calendario" element={<StudentRoute><CalendarioPage /></StudentRoute>} />
 
                 <Route path="/metodos" element={<StudentRoute><MetodosPage /></StudentRoute>} />
                 <Route path="/metodos/pomodoro" element={<StudentRoute><PomodoroPage /></StudentRoute>} />
