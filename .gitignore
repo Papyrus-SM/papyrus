@@ -7,3 +7,9 @@
 # SO
 .DS_Store
 Thumbs.db
+
+# Dependências
+node_modules/
+
+# Pasta duplicada residual (pode remover manualmente)
+papyrus-main/
