@@ -1,0 +1,27 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: papyrus-mysql
+    restart: unless-stopped
+
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-papyrus_dev}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-papyrus}
+
+    ports:
+      - "127.0.0.1:${MYSQL_PORT:-3306}:3306"
+
+    volumes:
+      - papyrus_mysql_data:/var/lib/mysql
+      - ./backend/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro,Z
+
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+
+volumes:
+  papyrus_mysql_data:
+    name: papyrus_mysql_data

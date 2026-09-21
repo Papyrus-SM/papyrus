@@ -1,264 +1,216 @@
-# Papyrus — Organizador de Estudos 🎓
+# Papyrus
 
-> Aplicação web em desenvolvimento para auxiliar estudantes na gestão de suas rotinas acadêmicas.
+Aplicação web para organização da rotina acadêmica, reunindo matérias, tarefas, anotações, cadernos, métodos de estudo e calendário em um único ambiente.
 
-O **Papyrus** é um sistema web voltado à organização da rotina de estudos, permitindo o gerenciamento de matérias, horários de aula, tarefas e anotações rápidas em um único ambiente digital. A proposta do projeto é centralizar recursos acadêmicos que normalmente ficam dispersos em diferentes ferramentas, oferecendo uma experiência mais integrada, intuitiva e produtiva para o estudante.
-
-![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
-![PHP](https://img.shields.io/badge/PHP-8.3+-777BB4?logo=php&logoColor=white)
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
-![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)
-
----
-
-## 📌 Índice
-
-- [Visão Geral](#-visão-geral)
-- [Status do Projeto](#-status-do-projeto)
-- [Tecnologias Utilizadas](#-tecnologias-utilizadas)
-- [Estrutura de Pastas](#-estrutura-de-pastas)
-- [Fluxo da Aplicação](#-fluxo-da-aplicação)
-- [Banco de Dados](#️-banco-de-dados)
-- [Configuração e Instalação](#️-configuração-e-instalação)
-- [Gestão de Usuários e Configuração de Administrador](#-gestão-de-usuários-e-configuração-de-administrador)
-- [Funcionalidades Principais](#-funcionalidades-principais)
-- [Principais Rotas da API](#️-principais-rotas-da-api)
-- [Como Contribuir](#-como-contribuir)
-- [Autores](#️-autores)
-
----
-
-## 📖 Visão Geral
-
-O Papyrus foi idealizado para atender estudantes que precisam organizar sua rotina acadêmica de forma mais eficiente. Em vez de depender de múltiplas ferramentas separadas para tarefas, horários, lembretes e organização pessoal, a proposta do sistema é reunir esses recursos em uma única aplicação web.
-
-O projeto está sendo desenvolvido com arquitetura desacoplada entre frontend e backend, priorizando organização de código, escalabilidade e clareza para manutenção em equipe.
-
----
-
-## 🚧 Status do Projeto
-
-O projeto encontra-se em desenvolvimento e evolução contínua. Atualmente, o Papyrus já contempla ou possui estrutura para as seguintes frentes:
-
-- Autenticação de usuários
-- Gerenciamento de matérias
-- Organização de tarefas por disciplina
-- Anotações rápidas com post-its
-- Fluxo inicial de onboarding
-- Área administrativa com permissões específicas
-
-> Algumas funcionalidades ainda podem estar em fase de implementação, refinamento visual ou integração entre módulos.
-
----
-
-## 🚀 Tecnologias Utilizadas
-
-### Frontend
-- **Core:** React 19 com Vite
-- **Estilização:** Tailwind CSS
-### Backend
-- **Linguagem:** PHP 8.3+ (API JSON sem framework)
-- **Gerenciamento de Dependências:** Composer
-- **Acesso a Dados:** PDO com consultas parametrizadas
-- **Variáveis de Ambiente:** phpdotenv
-
-### Banco de Dados
-- **Motor:** MySQL
-
----
-
-## 📂 Estrutura de Pastas
-
-O projeto segue uma arquitetura desacoplada, com separação clara entre cliente (frontend) e servidor (backend).
-
-### Backend
-
-```text
-backend/
-├── src/
-│   ├── api/                # Endpoints da aplicação e lógica de negócio
-│   │   ├── admin/          # Gestão de usuários pelo administrador
-│   │   ├── materias/       # CRUD de matérias acadêmicas
-│   │   ├── onboarding/     # Lógica de primeiro acesso do usuário
-│   │   ├── stickyNotes/    # Gestão de post-its virtuais
-│   │   ├── tarefa/         # Controle de prazos e atividades
-│   │   └── usuario/        # Autenticação e perfil do usuário
-│   ├── config/             # Conexão com banco, CORS e tratamento de entrada
-│   └── models/             # Classes e estruturas de representação de dados
-├── database/
-│   └── schema.sql          # Estrutura completa do banco de dados
-├── composer.json           # Dependências e configuração de autoload
-└── .env.example            # Modelo de variáveis de ambiente
-```
+## Tecnologias
 
 ### Frontend
 
-```text
-frontend/
-├── src/
-│   ├── components/         # Componentes reutilizáveis da interface
-│   ├── pages/              # Páginas principais da aplicação
-│   ├── services/           # Comunicação com a API
-│   ├── lib/                # Utilitários e funções auxiliares
-│   └── main.jsx            # Ponto de entrada da aplicação React
-├── package.json            # Dependências e scripts NPM
-└── vite.config.js          # Configuração do Vite
-```
+* React 19
+* Vite 8
+* Tailwind CSS 4
+* React Router
+* shadcn/ui e Radix UI
 
----
+### Backend
 
-## 🔄 Fluxo da Aplicação
+* PHP 8.3+
+* Composer
+* API JSON sem framework
+* PDO e sessões PHP
 
-O ciclo de funcionamento do Papyrus segue, de forma geral, as etapas abaixo:
+### Banco de dados
 
-1. **Interação do usuário:** o usuário realiza uma ação na interface, como criar uma tarefa ou cadastrar uma matéria.
-2. **Envio da requisição:** o frontend envia uma requisição assíncrona para a API em PHP.
-3. **Processamento no backend:** o servidor valida a sessão, trata os dados recebidos, executa a regra de negócio e acessa o banco de dados.
-4. **Retorno da resposta:** o backend responde em formato JSON com o resultado da operação.
-5. **Atualização da interface:** o frontend processa a resposta e atualiza a tela dinamicamente, sem recarregar a página.
+* MySQL 8.0
+* Docker Compose
 
-Esse fluxo permite uma separação clara de responsabilidades entre interface, regras de negócio e persistência de dados.
+## Pré-requisitos
 
----
+* Git
+* PHP 8.3 ou superior
+* Extensões PHP `PDO` e `pdo_mysql`
+* Composer 2
+* Node.js 22.12 ou superior
+* npm 10 ou superior
+* Docker com Docker Compose
 
-## 🗄️ Banco de Dados
-
-O banco de dados `papyrus` segue o modelo relacional e utiliza chaves estrangeiras para garantir integridade entre as entidades.
-
-### Principais tabelas
-
-| Tabela | Descrição | Relacionamento |
-|---|---|---|
-| `users` | Dados cadastrais e papel do usuário (`admin` / `estudante`) | Entidade principal |
-| `perfil_onboarding` | Armazena o status do fluxo inicial de configuração | 1:1 com `users` |
-| `materias` | Disciplinas cadastradas pelo estudante | N:1 com `users` |
-| `horarios_aula` | Horários recorrentes vinculados às matérias | N:1 com `materias` |
-| `tarefas` | Atividades com prazo e dificuldade | N:1 com `materias` |
-| `sticky_notes` | Anotações rápidas do usuário | N:1 com `users` |
-
-### Regras gerais do modelo
-
-- Cada usuário pode possuir várias matérias.
-- Cada matéria pode possuir vários horários e várias tarefas.
-- Cada usuário pode possuir múltiplos post-its.
-- O onboarding é associado individualmente a cada usuário.
-
----
-
-## ⚙️ Configuração e Instalação
-
-### Pré-requisitos
-
-Antes de executar o projeto localmente, certifique-se de ter instalado:
-
-- PHP 8.3 ou superior
-- Composer
-- Node.js 18 ou superior
-- MySQL 
-
-### 1. Clone o repositório
+Verifique o ambiente:
 
 ```bash
-git clone <url-do-repositorio>
+git --version
+php --version
+php -m | grep -Ei '^PDO$|pdo_mysql'
+composer --version
+node --version
+npm --version
+docker --version
+docker compose version
+```
+
+## Instalação
+
+### 1. Clonar o projeto
+
+```bash
+git clone https://github.com/Papyrus-SM/papyrus.git
 cd papyrus
 ```
 
-### 2. Configure o backend
+### 2. Iniciar o banco
 
 ```bash
+docker compose up -d
+```
+
+Na primeira inicialização, o Docker cria automaticamente:
+
+* o banco `papyrus`;
+* as tabelas definidas em `backend/database/schema.sql`;
+* o volume persistente `papyrus_mysql_data`.
+
+Verifique o container:
+
+```bash
+docker compose ps
+```
+
+O serviço `mysql` deverá aparecer como `healthy`.
+
+### 3. Configurar o backend
+
+```bash
+cp backend/.env.example backend/.env
 cd backend
 composer install
-cp .env.example .env
-composer dump-autoload
+composer check-platform-reqs
+cd ..
 ```
 
-Depois disso, edite o arquivo `.env` com as credenciais corretas do banco de dados e demais configurações do ambiente.
+Configuração local padrão:
 
-### 3. Configure o banco de dados
-
-Importe o schema no seu servidor MySQL:
-
-```bash
-mysql -u root -p < database/schema.sql
+```env
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_NAME=papyrus
+DB_USER=root
+DB_PASS=papyrus_dev
+DB_CHARSET=utf8mb4
+GEMINI_API_KEY=
 ```
 
-### 4. Configure e execute o frontend
+Preencha `GEMINI_API_KEY` somente para utilizar o chat com IA.
+
+### 4. Configurar o frontend
 
 ```bash
-cd ../frontend
-npm install
+cp frontend/.env.example frontend/.env
+cd frontend
+npm ci
+cd ..
+```
+
+Configuração local padrão:
+
+```env
+VITE_API_BASE_URL=/api
+VITE_BACKEND_URL=http://127.0.0.1:8000
+```
+
+## Execução
+
+Mantenha três terminais abertos.
+
+### Banco
+
+```bash
+docker compose up -d
+```
+
+### Backend
+
+Na raiz do projeto:
+
+```bash
+php -S 127.0.0.1:8000 -t backend
+```
+
+### Frontend
+
+```bash
+cd frontend
 npm run dev
 ```
 
-Por padrão, a aplicação ficará disponível em `http://localhost:5173`.
+Acesse:
 
----
+```text
+http://localhost:5173
+```
 
-## 👤 Gestão de Usuários e Configuração de Administrador
+## Administrador
 
-### Cadastro de usuários
+Novos usuários são cadastrados como estudantes. Depois de criar a conta pela interface, promova o usuário pelo banco:
 
-Novos usuários podem ser registrados pela interface da aplicação ou por meio do endpoint de criação de conta. Por padrão, todo usuário cadastrado recebe o papel de `estudante`.
-
-### Promoção manual para administrador
-
-Por questões de segurança, a promoção de um usuário para administrador não é realizada pela interface da aplicação. Para isso, é necessário executar diretamente no banco de dados:
-
-```sql
+```bash
+docker compose exec mysql mysql -uroot -ppapyrus_dev -e "
+USE papyrus;
 UPDATE users
 SET papel = 'admin'
-WHERE email = 'seu-email@exemplo.com';
+WHERE email = 'admin@gmail.com';
+"
 ```
 
-### Permissões do administrador
+## Comandos úteis
 
-Usuários com papel `admin` possuem acesso a funcionalidades administrativas específicas, como:
+```bash
+# Iniciar os serviços
+docker compose up -d
 
-- Visualizar todos os usuários cadastrados
-- Editar dados de contas
-- Excluir usuários
-- Acessar a área administrativa do sistema
+# Parar os serviços sem apagar os dados
+docker compose down
 
----
+# Acompanhar o MySQL
+docker compose logs -f mysql
 
-## ✨ Funcionalidades Principais
+# Verificar o frontend
+cd frontend
+npm run lint
+npm run build
 
-- **Autenticação de usuários:** cadastro, login, logout e validação de sessão.
-- **Dashboard acadêmico:** organização inicial das informações do estudante.
-- **Gestão de matérias:** criação, edição, listagem e remoção de disciplinas.
-- **Controle de tarefas:** tarefas vinculadas às matérias com prazos e níveis de dificuldade.
-- **Post-its interativos:** anotações rápidas para apoio à rotina de estudos.
-- **Onboarding inicial:** fluxo de primeiro acesso para configuração básica do usuário.
-- **Área administrativa:** gerenciamento de usuários com permissões específicas.
-
----
-
-## 🛣️ Principais Rotas da API
-
-Abaixo estão algumas das principais rotas atualmente utilizadas no sistema.
-
-| Método | Endpoint | Descrição | Acesso |
-|---|---|---|---|
-| `POST` | `/api/usuario/usuario_novo.php` | Cadastra um novo usuário | Público |
-| `POST` | `/api/usuario/usuario_login.php` | Realiza autenticação do usuário | Público |
-| `POST` | `/api/usuario/usuario_logout.php` | Encerra a sessão do usuário | Sessão |
-| `GET` | `/api/usuario/valida_sessao.php` | Verifica se a sessão está ativa | Sessão |
-| `GET` | `/api/materias/materias_listar.php` | Lista as matérias do usuário logado | Sessão |
-| `POST` | `/api/tarefa/tarefa_criar.php` | Cria uma nova tarefa vinculada a uma matéria | Sessão |
-| `GET` | `/api/stickyNotes/stickyNotes_get.php` | Recupera os post-its do usuário | Sessão |
-| `PUT` | `/api/admin/admin_usuario_editar.php` | Edita dados de qualquer usuário | Admin |
-
-> Esta seção pode ser expandida futuramente com a documentação completa de todos os endpoints do sistema.
-
----
-
-## ✍️ Autores
-
-Projeto desenvolvido em equipe para a disciplina de **Experiência Criativa: Projetando Soluções Computacionais** — PUCPR.
-
-- João Victor dos Reis da Silva
-- Eduardo Lopes
-- Gabriel Rossi
-- Emanuel Henrique
-- Julio Miguel
+# Verificar o backend
+cd backend
+composer check-platform-reqs
 ```
+
+## Estrutura
+
+```text
+papyrus/
+├── backend/
+│   ├── database/
+│   ├── src/api/
+│   ├── src/config/
+│   └── composer.json
+├── frontend/
+│   ├── src/components/
+│   ├── src/pages/
+│   ├── src/services/
+│   └── package.json
+├── compose.yaml
+└── README.md
+```
+
+## Funcionalidades
+
+* Cadastro, login e logout
+* Onboarding do estudante
+* Matérias e horários
+* Tarefas
+* Sticky notes
+* Cadernos e páginas
+* Flashcards
+* Pomodoro
+* Chat com IA
+* Calendário com criação e consulta de eventos
+* Painel administrativo
+
