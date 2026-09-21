@@ -24,10 +24,6 @@ function formatDateKey(year, month, day) {
     return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
 }
 
-function isSameDay(a, b) {
-    return a === b
-}
-
 function getWeekDays(date) {
     const d = new Date(date)
     const day = d.getDay()
@@ -339,7 +335,6 @@ export default function CalendarioPage() {
 
                                                             const tarefasDia = tarefasNoDia(day.dateKey)
                                                             const eventosDia = eventosNoDia(day.dateKey)
-                                                            const temAlerta = tarefasDia.some((t) => calcularAlerta(t) !== null)
 
                                                             return (
                                                                 <button
@@ -421,7 +416,6 @@ export default function CalendarioPage() {
                                                 {getWeekDays(currentDate).map((dayInfo) => {
                                                     const tarefasDia = tarefasNoDia(dayInfo.dateKey)
                                                     const eventosDia = eventosNoDia(dayInfo.dateKey)
-                                                    const temAlerta = tarefasDia.some((t) => calcularAlerta(t) !== null)
 
                                                     return (
                                                         <button
